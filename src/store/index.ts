@@ -1,7 +1,8 @@
-import { createPinia } from 'pinia'
+import { createPinia } from 'pinia';
 
 // Create and export the Pinia instance
-export const pinia = createPinia()
+export const pinia = createPinia();
 
 // Export all stores from this file
-export * from './demo'
+export * from './demo';
+export * from './auth';
