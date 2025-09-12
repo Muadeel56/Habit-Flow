@@ -14,6 +14,15 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        HTMLElement: 'readonly',
+        Event: 'readonly',
+        Node: 'readonly',
+        document: 'readonly',
+        alert: 'readonly',
+        window: 'readonly',
+        console: 'readonly',
+      },
       parserOptions: {
         parser: tseslint.parser,
       },
