@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { supabase } from '../lib/supabase';
+import { useAchievementsStore } from './achievements';
 
 export interface Habit {
   id: string;
@@ -383,6 +384,10 @@ export const useHabitsStore = defineStore('habits', () => {
 
       // Refresh streaks to get updated values
       await fetchHabitStreaks();
+
+      // Check for new achievements
+      const achievementsStore = useAchievementsStore();
+      await achievementsStore.checkForNewAchievements();
 
       return { success: true, data };
     } catch (err) {
