@@ -29,6 +29,8 @@
       />
     </div>
 
+    <!-- Filter Controls -->
+    <HabitFilters v-if="!showForm" />
     <!-- Habit List -->
     <HabitList @edit="handleEditHabit" />
 
@@ -52,6 +54,7 @@ import { ref, onMounted } from 'vue';
 import { useHabitsStore, type Habit } from '@/store/habits';
 import HabitForm from '@/components/habits/HabitForm.vue';
 import HabitList from '@/components/habits/HabitList.vue';
+import HabitFilters from '@/components/habits/HabitFilters.vue';
 
 const habitsStore = useHabitsStore();
 

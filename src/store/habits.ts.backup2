@@ -51,52 +51,12 @@ export interface UpdateHabitData {
   is_active?: boolean;
 }
 
-// Filter and Sort interfaces
-export type HabitFilterStatus =
-  | 'all'
-  | 'active'
-  | 'inactive'
-  | 'completed_today'
-  | 'not_completed_today';
-export type HabitFilterFrequency = 'all' | 'daily' | 'weekly' | 'monthly';
-export type HabitSortBy =
-  | 'name'
-  | 'frequency'
-  | 'status'
-  | 'current_streak'
-  | 'best_streak'
-  | 'created_at';
-export type HabitSortOrder = 'asc' | 'desc';
-
-export interface HabitFilters {
-  status: HabitFilterStatus;
-  frequency: HabitFilterFrequency;
-  search: string;
-}
-
-export interface HabitSort {
-  by: HabitSortBy;
-  order: HabitSortOrder;
-}
-
 export const useHabitsStore = defineStore('habits', () => {
   const habits = ref<Habit[]>([]);
   const habitCompletions = ref<HabitCompletion[]>([]);
   const habitStreaks = ref<HabitStreak[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
-
-  // Filter and Sort state
-  const filters = ref<HabitFilters>({
-    status: 'all',
-    frequency: 'all',
-    search: '',
-  });
-
-  const sort = ref<HabitSort>({
-    by: 'created_at',
-    order: 'desc',
-  });
 
   const activeHabits = computed(() =>
     habits.value.filter(habit => habit.is_active)
@@ -125,110 +85,6 @@ export const useHabitsStore = defineStore('habits', () => {
       };
     });
   });
-
-  // Filtered and sorted habits
-  const filteredAndSortedHabits = computed((): HabitWithStreak[] => {
-    let result = [...habitsWithStreaks.value];
-
-    // Apply filters
-    // Status filter
-    switch (filters.value.status) {
-      case 'active':
-        result = result.filter(habit => habit.is_active);
-        break;
-      case 'inactive':
-        result = result.filter(habit => !habit.is_active);
-        break;
-      case 'completed_today':
-        result = result.filter(habit => habit.is_completed_today);
-        break;
-      case 'not_completed_today':
-        result = result.filter(
-          habit => !habit.is_completed_today && habit.is_active
-        );
-        break;
-    }
-
-    // Frequency filter
-    if (filters.value.frequency !== 'all') {
-      result = result.filter(
-        habit => habit.frequency === filters.value.frequency
-      );
-    }
-
-    // Search filter
-    if (filters.value.search.trim()) {
-      const searchTerm = filters.value.search.toLowerCase().trim();
-      result = result.filter(
-        habit =>
-          habit.title.toLowerCase().includes(searchTerm) ||
-          habit.description.toLowerCase().includes(searchTerm)
-      );
-    }
-
-    // Apply sorting
-    result.sort((a, b) => {
-      let comparison = 0;
-
-      switch (sort.value.by) {
-        case 'name':
-          comparison = a.title.localeCompare(b.title);
-          break;
-        case 'frequency': {
-          const frequencyOrder = { daily: 1, weekly: 2, monthly: 3 };
-          comparison =
-            frequencyOrder[a.frequency] - frequencyOrder[b.frequency];
-          break;
-        }
-        case 'status':
-          if (a.is_active && !b.is_active) comparison = -1;
-          else if (!a.is_active && b.is_active) comparison = 1;
-          else comparison = 0;
-          break;
-        case 'current_streak':
-          comparison =
-            (a.streak?.current_streak || 0) - (b.streak?.current_streak || 0);
-          break;
-        case 'best_streak':
-          comparison =
-            (a.streak?.best_streak || 0) - (b.streak?.best_streak || 0);
-          break;
-        case 'created_at':
-        default:
-          comparison =
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-          break;
-      }
-
-      return sort.value.order === 'asc' ? comparison : -comparison;
-    });
-
-    return result;
-  });
-
-  // Filter and Sort actions
-  const updateFilters = (newFilters: Partial<HabitFilters>) => {
-    filters.value = { ...filters.value, ...newFilters };
-  };
-
-  const updateSort = (newSort: Partial<HabitSort>) => {
-    sort.value = { ...sort.value, ...newSort };
-  };
-
-  const resetFilters = () => {
-    filters.value = {
-      status: 'all',
-      frequency: 'all',
-      search: '',
-    };
-  };
-
-  const resetSort = () => {
-    sort.value = {
-      by: 'created_at',
-      order: 'desc',
-    };
-  };
 
   // Fetch all habits for the current user
   const fetchHabits = async () => {
@@ -566,22 +422,14 @@ export const useHabitsStore = defineStore('habits', () => {
   };
 
   return {
-    // State
     habits,
     habitCompletions,
     habitStreaks,
     loading,
     error,
-    filters,
-    sort,
-
-    // Computed
     activeHabits,
     inactiveHabits,
     habitsWithStreaks,
-    filteredAndSortedHabits,
-
-    // Actions
     fetchHabits,
     fetchHabitCompletions,
     fetchHabitStreaks,
@@ -593,11 +441,5 @@ export const useHabitsStore = defineStore('habits', () => {
     toggleHabitStatus,
     initializeData,
     clearError,
-
-    // Filter and Sort actions
-    updateFilters,
-    updateSort,
-    resetFilters,
-    resetSort,
   };
 });
