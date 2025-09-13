@@ -215,7 +215,7 @@ const emit = defineEmits<Emits>();
 const habitsStore = useHabitsStore();
 
 const habits = computed(() => habitsStore.habits);
-const habitsWithStreaks = computed(() => habitsStore.habitsWithStreaks);
+const habitsWithStreaks = computed(() => habitsStore.filteredAndSortedHabits);
 const loading = computed(() => habitsStore.loading);
 const error = computed(() => habitsStore.error);
 

@@ -22,6 +22,8 @@ export default [
         alert: 'readonly',
         window: 'readonly',
         console: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
       },
       parserOptions: {
         parser: tseslint.parser,
