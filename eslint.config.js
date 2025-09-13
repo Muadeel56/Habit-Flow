@@ -24,6 +24,18 @@ export default [
         console: 'readonly',
         HTMLInputElement: 'readonly',
         HTMLSelectElement: 'readonly',
+        // Browser APIs
+        navigator: 'readonly',
+        localStorage: 'readonly',
+        setTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearTimeout: 'readonly',
+        clearInterval: 'readonly',
+        // Service Worker APIs
+        self: 'readonly',
+        caches: 'readonly',
+        clients: 'readonly',
+        fetch: 'readonly',
       },
       parserOptions: {
         parser: tseslint.parser,
@@ -36,6 +48,28 @@ export default [
         { argsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
+    },
+  },
+  // Service Worker specific configuration
+  {
+    files: ['public/sw.js'],
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+        caches: 'readonly',
+        clients: 'readonly',
+        fetch: 'readonly',
+        addEventListener: 'readonly',
+        skipWaiting: 'readonly',
+        claim: 'readonly',
+        showNotification: 'readonly',
+        postMessage: 'readonly',
+        matchAll: 'readonly',
+        openWindow: 'readonly',
+        focus: 'readonly',
+        close: 'readonly',
+        registration: 'readonly',
+      },
     },
   },
 ];
