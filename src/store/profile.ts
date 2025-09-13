@@ -13,6 +13,14 @@ export interface UserProfile {
   email_notifications: boolean;
   daily_reminders: boolean;
   weekly_reports: boolean;
+  // New notification preferences
+  push_notifications: boolean;
+  reminder_time: string; // TIME stored as string in HH:MM:SS format
+  reminder_days: number[]; // Array of day numbers (1=Monday, 7=Sunday)
+  notification_sound: boolean;
+  quiet_hours_start: string; // TIME stored as string
+  quiet_hours_end: string; // TIME stored as string
+  timezone: string;
   created_at: string;
   updated_at: string;
 }
@@ -88,6 +96,14 @@ export const useProfileStore = defineStore('profile', () => {
         email_notifications: true,
         daily_reminders: true,
         weekly_reports: false,
+        // New notification preferences defaults
+        push_notifications: true,
+        reminder_time: '09:00:00',
+        reminder_days: [1, 2, 3, 4, 5, 6, 7], // All days of the week
+        notification_sound: true,
+        quiet_hours_start: '22:00:00',
+        quiet_hours_end: '08:00:00',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
       };
 
       const { data, error: createError } = await supabase

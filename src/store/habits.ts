@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { supabase } from '../lib/supabase';
 import { useAchievementsStore } from './achievements';
+import { useNotificationsStore } from './notifications';
 
 export interface Habit {
   id: string;
@@ -384,6 +385,19 @@ export const useHabitsStore = defineStore('habits', () => {
 
       // Refresh streaks to get updated values
       await fetchHabitStreaks();
+
+      // Send streak notification if milestone reached
+      const habit = habits.value.find(h => h.id === habitId);
+      if (habit) {
+        const streak = habitStreaks.value.find(s => s.habit_id === habitId);
+        if (streak) {
+          const notificationsStore = useNotificationsStore();
+          await notificationsStore.sendStreakNotification(
+            habit.title,
+            streak.current_streak
+          );
+        }
+      }
 
       // Check for new achievements
       const achievementsStore = useAchievementsStore();

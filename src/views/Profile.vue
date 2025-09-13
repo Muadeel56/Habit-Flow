@@ -214,36 +214,6 @@
               <div class="flex items-center justify-between">
                 <div>
                   <h3 class="text-sm font-medium text-gray-900">
-                    Email Notifications
-                  </h3>
-                  <p class="text-sm text-gray-500">
-                    Receive email updates about your habits
-                  </p>
-                </div>
-                <input
-                  v-model="formData.email_notifications"
-                  type="checkbox"
-                  class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-              </div>
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-sm font-medium text-gray-900">
-                    Daily Reminders
-                  </h3>
-                  <p class="text-sm text-gray-500">
-                    Get reminded to complete your habits
-                  </p>
-                </div>
-                <input
-                  v-model="formData.daily_reminders"
-                  type="checkbox"
-                  class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-              </div>
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-sm font-medium text-gray-900">
                     Weekly Reports
                   </h3>
                   <p class="text-sm text-gray-500">
@@ -270,6 +240,13 @@
           </form>
         </div>
       </div>
+
+      <!-- Notification Settings -->
+      <div class="bg-white rounded-lg shadow">
+        <div class="p-6">
+          <NotificationSettings />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -277,6 +254,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useProfileStore } from '../store/profile';
+import NotificationSettings from '../components/profile/NotificationSettings.vue';
 
 const profileStore = useProfileStore();
 const showSuccessMessage = ref(false);

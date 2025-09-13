@@ -9,6 +9,14 @@ CREATE TABLE IF NOT EXISTS profiles (
   email_notifications BOOLEAN DEFAULT true,
   daily_reminders BOOLEAN DEFAULT true,
   weekly_reports BOOLEAN DEFAULT false,
+  -- New notification preferences
+  push_notifications BOOLEAN DEFAULT true,
+  reminder_time TIME DEFAULT '09:00:00',
+  reminder_days INTEGER[] DEFAULT '{1,2,3,4,5,6,7}', -- 1=Monday, 7=Sunday
+  notification_sound BOOLEAN DEFAULT true,
+  quiet_hours_start TIME DEFAULT '22:00:00',
+  quiet_hours_end TIME DEFAULT '08:00:00',
+  timezone TEXT DEFAULT 'UTC',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

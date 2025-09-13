@@ -10,3 +10,4 @@ export * from './profile';
 export * from './habits';
 export * from './analytics';
 export * from './achievements';
+export * from './notifications';
