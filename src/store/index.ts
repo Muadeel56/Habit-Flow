@@ -6,3 +6,4 @@ export const pinia = createPinia();
 // Export all stores from this file
 export * from './demo';
 export * from './auth';
+export * from './profile';
