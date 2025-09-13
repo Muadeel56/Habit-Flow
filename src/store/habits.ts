@@ -13,6 +13,31 @@ export interface Habit {
   updated_at: string;
 }
 
+export interface HabitCompletion {
+  id: string;
+  habit_id: string;
+  user_id: string;
+  completed_date: string;
+  completed_at: string;
+  notes?: string;
+  created_at: string;
+}
+
+export interface HabitStreak {
+  id: string;
+  habit_id: string;
+  user_id: string;
+  current_streak: number;
+  best_streak: number;
+  last_completed_date?: string;
+  updated_at: string;
+}
+
+export interface HabitWithStreak extends Habit {
+  streak?: HabitStreak;
+  is_completed_today?: boolean;
+}
+
 export interface CreateHabitData {
   title: string;
   description: string;
@@ -28,6 +53,8 @@ export interface UpdateHabitData {
 
 export const useHabitsStore = defineStore('habits', () => {
   const habits = ref<Habit[]>([]);
+  const habitCompletions = ref<HabitCompletion[]>([]);
+  const habitStreaks = ref<HabitStreak[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
@@ -38,6 +65,26 @@ export const useHabitsStore = defineStore('habits', () => {
   const inactiveHabits = computed(() =>
     habits.value.filter(habit => !habit.is_active)
   );
+
+  // Get habits with streak information and today's completion status
+  const habitsWithStreaks = computed((): HabitWithStreak[] => {
+    const today = new Date().toISOString().split('T')[0];
+
+    return habits.value.map(habit => {
+      const streak = habitStreaks.value.find(s => s.habit_id === habit.id);
+      const isCompletedToday = habitCompletions.value.some(
+        completion =>
+          completion.habit_id === habit.id &&
+          completion.completed_date === today
+      );
+
+      return {
+        ...habit,
+        streak,
+        is_completed_today: isCompletedToday,
+      };
+    });
+  });
 
   // Fetch all habits for the current user
   const fetchHabits = async () => {
@@ -67,6 +114,181 @@ export const useHabitsStore = defineStore('habits', () => {
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Failed to fetch habits';
+      error.value = errorMessage;
+      return { success: false, error: errorMessage };
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // Fetch habit completions for a specific date range
+  const fetchHabitCompletions = async (
+    startDate?: string,
+    endDate?: string
+  ) => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      let query = supabase
+        .from('habit_completions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('completed_date', { ascending: false });
+
+      if (startDate) {
+        query = query.gte('completed_date', startDate);
+      }
+      if (endDate) {
+        query = query.lte('completed_date', endDate);
+      }
+
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      habitCompletions.value = data || [];
+      return { success: true, data };
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch habit completions';
+      error.value = errorMessage;
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  // Fetch habit streaks for the current user
+  const fetchHabitStreaks = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const { data, error: fetchError } = await supabase
+        .from('habit_streaks')
+        .select('*')
+        .eq('user_id', user.id);
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      habitStreaks.value = data || [];
+      return { success: true, data };
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to fetch habit streaks';
+      error.value = errorMessage;
+      return { success: false, error: errorMessage };
+    }
+  };
+
+  // Mark a habit as completed for today
+  const markHabitCompleted = async (habitId: string, notes?: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+
+      // Check if already completed today
+      const existingCompletion = habitCompletions.value.find(
+        completion =>
+          completion.habit_id === habitId && completion.completed_date === today
+      );
+
+      if (existingCompletion) {
+        return { success: false, error: 'Habit already completed today' };
+      }
+
+      const { data, error: insertError } = await supabase
+        .from('habit_completions')
+        .insert({
+          habit_id: habitId,
+          user_id: user.id,
+          completed_date: today,
+          notes: notes || null,
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      // Add to local state
+      habitCompletions.value.unshift(data);
+
+      // Refresh streaks to get updated values
+      await fetchHabitStreaks();
+
+      return { success: true, data };
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to mark habit as completed';
+      error.value = errorMessage;
+      return { success: false, error: errorMessage };
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // Unmark a habit as completed for today
+  const unmarkHabitCompleted = async (habitId: string) => {
+    try {
+      loading.value = true;
+      error.value = null;
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const { error: deleteError } = await supabase
+        .from('habit_completions')
+        .delete()
+        .eq('habit_id', habitId)
+        .eq('completed_date', today);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      // Remove from local state
+      habitCompletions.value = habitCompletions.value.filter(
+        completion =>
+          !(
+            completion.habit_id === habitId &&
+            completion.completed_date === today
+          )
+      );
+
+      // Refresh streaks to get updated values
+      await fetchHabitStreaks();
+
+      return { success: true };
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Failed to unmark habit as completed';
       error.value = errorMessage;
       return { success: false, error: errorMessage };
     } finally {
@@ -185,6 +407,15 @@ export const useHabitsStore = defineStore('habits', () => {
     return await updateHabit(habitId, { is_active: !habit.is_active });
   };
 
+  // Initialize all data
+  const initializeData = async () => {
+    await Promise.all([
+      fetchHabits(),
+      fetchHabitCompletions(),
+      fetchHabitStreaks(),
+    ]);
+  };
+
   // Clear error
   const clearError = () => {
     error.value = null;
@@ -192,15 +423,23 @@ export const useHabitsStore = defineStore('habits', () => {
 
   return {
     habits,
+    habitCompletions,
+    habitStreaks,
     loading,
     error,
     activeHabits,
     inactiveHabits,
+    habitsWithStreaks,
     fetchHabits,
+    fetchHabitCompletions,
+    fetchHabitStreaks,
+    markHabitCompleted,
+    unmarkHabitCompleted,
     createHabit,
     updateHabit,
     deleteHabit,
     toggleHabitStatus,
+    initializeData,
     clearError,
   };
 });
