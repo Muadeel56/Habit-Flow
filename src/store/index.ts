@@ -7,3 +7,4 @@ export const pinia = createPinia();
 export * from './demo';
 export * from './auth';
 export * from './profile';
+export * from './habits';

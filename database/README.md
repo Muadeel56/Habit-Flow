@@ -1,48 +1,34 @@
-# Database Schema Setup
+# Database Setup
 
-This directory contains the database schema files for the Habit Flow application.
+This directory contains SQL scripts for setting up the Habit Flow database schema.
 
 ## Setup Instructions
 
-### 1. Supabase Database Setup
+1. **Profiles Schema** (already set up):
+   ```sql
+   -- Run this first to set up user profiles
+   \i profiles_schema.sql
+   ```
 
-1. Go to your Supabase dashboard
-2. Navigate to the SQL Editor
-3. Run the `profiles_schema.sql` file to create the profiles table and necessary policies
+2. **Habits Schema** (new):
+   ```sql
+   -- Run this to set up the habits table
+   \i habits_schema.sql
+   ```
 
-### 2. What the Schema Includes
+## Database Tables
 
-- **profiles table**: Stores user profile information
-- **Storage bucket**: For avatar uploads
-- **Row Level Security (RLS)**: Ensures users can only access their own data
-- **Triggers**: Automatically creates profile when user signs up and updates timestamps
+### profiles
+- User profile information
+- Linked to auth.users via foreign key
+- Includes notification preferences
 
-### 3. Table Structure
+### habits
+- User habits with title, description, and frequency
+- Linked to auth.users via user_id foreign key
+- Supports daily, weekly, and monthly frequencies
+- Row Level Security (RLS) enabled for data isolation
 
-```sql
-profiles (
-  id UUID PRIMARY KEY,           -- References auth.users(id)
-  email TEXT NOT NULL,           -- User's email
-  first_name TEXT,               -- User's first name
-  last_name TEXT,                -- User's last name
-  phone TEXT,                    -- User's phone number
-  avatar_url TEXT,               -- URL to user's avatar image
-  email_notifications BOOLEAN,   -- Email notification preference
-  daily_reminders BOOLEAN,       -- Daily reminder preference
-  weekly_reports BOOLEAN,        -- Weekly report preference
-  created_at TIMESTAMP,          -- Record creation timestamp
-  updated_at TIMESTAMP           -- Record update timestamp
-)
-```
+## Security
 
-### 4. Storage Bucket
-
-- **Bucket name**: `avatars`
-- **Public access**: Yes (for viewing avatars)
-- **Path structure**: `avatars/{user_id}-{timestamp}.{extension}`
-
-### 5. Security Policies
-
-- Users can only view, insert, and update their own profile
-- Users can upload, view, update, and delete their own avatars
-- All avatar images are publicly viewable (but only the owner can modify)
+All tables use Row Level Security (RLS) to ensure users can only access their own data. The policies are automatically applied when the schema scripts are run.
