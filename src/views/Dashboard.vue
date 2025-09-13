@@ -39,6 +39,17 @@
         <StreakWidget />
       </div>
 
+      <!-- Achievements Widget -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <BadgeWidget />
+
+        <!-- Placeholder for future widget -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Coming Soon</h3>
+          <p class="text-gray-600">More analytics features coming soon!</p>
+        </div>
+      </div>
+
       <!-- Detailed analytics -->
       <div class="grid grid-cols-1 gap-8">
         <HabitAnalytics />
@@ -102,6 +113,7 @@ import CompletionChart from '../components/analytics/CompletionChart.vue';
 import StreakWidget from '../components/analytics/StreakWidget.vue';
 import HabitAnalytics from '../components/analytics/HabitAnalytics.vue';
 import ProgressOverviewCards from '../components/analytics/ProgressOverviewCards.vue';
+import BadgeWidget from '../components/achievements/BadgeWidget.vue';
 
 const analyticsStore = useAnalyticsStore();
 const habitsStore = useHabitsStore();

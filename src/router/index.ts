@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Dashboard from '../views/Dashboard.vue';
 import Habits from '../views/Habits.vue';
 import Profile from '../views/Profile.vue';
+import Achievements from '../views/Achievements.vue';
 import Login from '../views/auth/Login.vue';
 import SignUp from '../views/auth/SignUp.vue';
 import { setupAuthGuards } from './guards';
@@ -39,6 +40,12 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/achievements',
+    name: 'Achievements',
+    component: Achievements,
     meta: { requiresAuth: true },
   },
 ];
