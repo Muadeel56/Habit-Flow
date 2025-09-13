@@ -8,3 +8,4 @@ export * from './demo';
 export * from './auth';
 export * from './profile';
 export * from './habits';
+export * from './analytics';
