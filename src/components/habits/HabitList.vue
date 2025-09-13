@@ -34,23 +34,32 @@
     <!-- Habits Grid -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-for="habit in habits"
+        v-for="habit in habitsWithStreaks"
         :key="habit.id"
         class="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+        :class="{ 'ring-2 ring-green-200': habit.is_completed_today }"
       >
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-semibold text-gray-900">{{ habit.title }}</h3>
-          <span
-            :class="[
-              'px-2 py-1 text-xs rounded-full',
-              habit.is_active
-                ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800',
-            ]"
-          >
-            {{ habit.is_active ? 'Active' : 'Inactive' }}
-          </span>
+          <div class="flex items-center space-x-2">
+            <span
+              :class="[
+                'px-2 py-1 text-xs rounded-full',
+                habit.is_active
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-gray-100 text-gray-800',
+              ]"
+            >
+              {{ habit.is_active ? 'Active' : 'Inactive' }}
+            </span>
+            <span
+              v-if="habit.is_completed_today"
+              class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+            >
+              ✓ Done
+            </span>
+          </div>
         </div>
 
         <!-- Description -->
@@ -65,6 +74,80 @@
           >
             {{ formatFrequency(habit.frequency) }}
           </span>
+        </div>
+
+        <!-- Streak Information -->
+        <div v-if="habit.streak" class="mb-4 p-3 bg-gray-50 rounded-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <div class="text-center">
+                <div class="text-lg font-bold text-orange-600">
+                  {{ habit.streak.current_streak }}
+                </div>
+                <div class="text-xs text-gray-500">Current</div>
+              </div>
+              <div class="text-center">
+                <div class="text-lg font-bold text-purple-600">
+                  {{ habit.streak.best_streak }}
+                </div>
+                <div class="text-xs text-gray-500">Best</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-medium text-gray-700">Streak</div>
+              <div class="text-xs text-gray-500">
+                {{ formatLastCompleted(habit.streak.last_completed_date) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completion Toggle -->
+        <div v-if="habit.is_active" class="mb-4">
+          <button
+            @click="handleToggleCompletion(habit)"
+            :disabled="loading"
+            :class="[
+              'w-full py-2 px-4 rounded-lg font-medium transition-colors',
+              habit.is_completed_today
+                ? 'bg-green-100 text-green-800 hover:bg-green-200 border border-green-300'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300',
+            ]"
+          >
+            <div class="flex items-center justify-center space-x-2">
+              <svg
+                v-if="habit.is_completed_today"
+                class="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <svg
+                v-else
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4"
+                />
+              </svg>
+              <span>
+                {{
+                  habit.is_completed_today ? 'Completed Today' : 'Mark as Done'
+                }}
+              </span>
+            </div>
+          </button>
         </div>
 
         <!-- Actions -->
@@ -120,11 +203,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useHabitsStore, type Habit } from '@/store/habits';
+import { computed, onMounted } from 'vue';
+import { useHabitsStore, type HabitWithStreak } from '@/store/habits';
 
 interface Emits {
-  (e: 'edit', habit: Habit): void;
+  (e: 'edit', habit: HabitWithStreak): void;
 }
 
 const emit = defineEmits<Emits>();
@@ -132,6 +215,7 @@ const emit = defineEmits<Emits>();
 const habitsStore = useHabitsStore();
 
 const habits = computed(() => habitsStore.habits);
+const habitsWithStreaks = computed(() => habitsStore.habitsWithStreaks);
 const loading = computed(() => habitsStore.loading);
 const error = computed(() => habitsStore.error);
 
@@ -153,18 +237,50 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const handleEdit = (habit: Habit) => {
+const formatLastCompleted = (dateString?: string) => {
+  if (!dateString) return 'Never';
+
+  const date = new Date(dateString);
+  const today = new Date();
+  const diffTime = today.getTime() - date.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const handleEdit = (habit: HabitWithStreak) => {
   emit('edit', habit);
 };
 
-const handleToggleStatus = async (habit: Habit) => {
+const handleToggleStatus = async (habit: HabitWithStreak) => {
   const result = await habitsStore.toggleHabitStatus(habit.id);
   if (!result.success) {
     console.error('Failed to toggle habit status:', result.error);
   }
 };
 
-const handleDelete = async (habit: Habit) => {
+const handleToggleCompletion = async (habit: HabitWithStreak) => {
+  if (habit.is_completed_today) {
+    const result = await habitsStore.unmarkHabitCompleted(habit.id);
+    if (!result.success) {
+      console.error('Failed to unmark habit as completed:', result.error);
+    }
+  } else {
+    const result = await habitsStore.markHabitCompleted(habit.id);
+    if (!result.success) {
+      console.error('Failed to mark habit as completed:', result.error);
+    }
+  }
+};
+
+const handleDelete = async (habit: HabitWithStreak) => {
   if (
     window.confirm(
       `Are you sure you want to delete "${habit.title}"? This action cannot be undone.`
@@ -180,4 +296,9 @@ const handleDelete = async (habit: Habit) => {
 const clearError = () => {
   habitsStore.clearError();
 };
+
+// Initialize data when component mounts
+onMounted(async () => {
+  await habitsStore.initializeData();
+});
 </script>
