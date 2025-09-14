@@ -1,13 +1,13 @@
 <template>
   <div class="achievements-display">
     <!-- Header with Stats -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="bg-card rounded-lg shadow-sm border border-border p-6 mb-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-bold text-gray-900">Achievements</h2>
+        <h2 class="text-2xl font-bold text-card-foreground">Achievements</h2>
         <button
           @click="refreshAchievements"
           :disabled="loading"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           <svg
             v-if="loading"
@@ -71,16 +71,16 @@
           </div>
         </div>
 
-        <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+        <div class="bg-primary/10 border border-primary/20 rounded-lg p-4">
           <div class="flex items-center">
-            <div class="text-purple-600 mr-3">
+            <div class="text-primary mr-3">
               <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
             </div>
             <div>
-              <p class="text-sm text-purple-700">Progress</p>
-              <p class="text-2xl font-bold text-purple-800">
+              <p class="text-sm text-primary">Progress</p>
+              <p class="text-2xl font-bold text-primary">
                 {{ completionPercentage }}%
               </p>
             </div>

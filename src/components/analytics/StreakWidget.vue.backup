@@ -1,17 +1,15 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+  <div class="bg-white rounded-lg shadow-md p-6">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Habit Streaks
-      </h3>
+      <h3 class="text-lg font-semibold text-gray-900">Habit Streaks</h3>
       <div class="flex items-center space-x-2">
         <button
           @click="viewMode = 'current'"
           :class="[
             'px-3 py-1 text-sm rounded-md transition-colors',
             viewMode === 'current'
-              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
+              ? 'bg-blue-100 text-blue-700'
+              : 'text-gray-500 hover:text-gray-700',
           ]"
         >
           Current
@@ -21,8 +19,8 @@
           :class="[
             'px-3 py-1 text-sm rounded-md transition-colors',
             viewMode === 'best'
-              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300',
+              ? 'bg-blue-100 text-blue-700'
+              : 'text-gray-500 hover:text-gray-700',
           ]"
         >
           Best
@@ -32,43 +30,41 @@
 
     <div v-if="loading" class="flex justify-center py-8">
       <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"
       ></div>
     </div>
 
     <div v-else-if="error" class="text-center py-8">
-      <p class="text-destructive">{{ error }}</p>
+      <p class="text-red-600">{{ error }}</p>
     </div>
 
     <div v-else-if="streakData.length === 0" class="text-center py-8">
-      <p class="text-gray-500 dark:text-gray-400">No habit streaks available</p>
+      <p class="text-gray-500">No habit streaks available</p>
     </div>
 
     <div v-else class="space-y-4">
       <div
         v-for="streak in streakData"
         :key="streak.habit.id"
-        class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+        class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
       >
         <div class="flex-1">
-          <h4 class="font-medium text-gray-900 dark:text-white">
-            {{ streak.habit.title }}
-          </h4>
-          <p class="text-sm text-gray-500 dark:text-gray-400 capitalize">
+          <h4 class="font-medium text-gray-900">{{ streak.habit.title }}</h4>
+          <p class="text-sm text-gray-500 capitalize">
             {{ streak.habit.frequency }}
           </p>
         </div>
 
         <div class="flex items-center space-x-4">
           <div class="text-center">
-            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div class="text-2xl font-bold text-blue-600">
               {{
                 viewMode === 'current'
                   ? streak.currentStreak
                   : streak.bestStreak
               }}
             </div>
-            <div class="text-xs text-gray-500 dark:text-gray-400">
+            <div class="text-xs text-gray-500">
               {{ viewMode === 'current' ? 'Current' : 'Best' }}
             </div>
           </div>
@@ -106,24 +102,18 @@
     <!-- Summary stats -->
     <div
       v-if="!loading && !error && streakData.length > 0"
-      class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700"
+      class="mt-6 pt-4 border-t border-gray-200"
     >
       <div class="grid grid-cols-2 gap-4">
         <div class="text-center">
-          <div class="text-xl font-bold text-gray-900 dark:text-white">
-            {{ averageStreak }}
-          </div>
-          <div class="text-sm text-gray-500 dark:text-gray-400">
+          <div class="text-xl font-bold text-gray-900">{{ averageStreak }}</div>
+          <div class="text-sm text-gray-500">
             Average {{ viewMode === 'current' ? 'Current' : 'Best' }}
           </div>
         </div>
         <div class="text-center">
-          <div class="text-xl font-bold text-gray-900 dark:text-white">
-            {{ totalHabits }}
-          </div>
-          <div class="text-sm text-gray-500 dark:text-gray-400">
-            Total Habits
-          </div>
+          <div class="text-xl font-bold text-gray-900">{{ totalHabits }}</div>
+          <div class="text-sm text-gray-500">Total Habits</div>
         </div>
       </div>
     </div>
@@ -186,15 +176,11 @@ const averageStreak = computed(() => {
 const totalHabits = computed(() => streakData.value.length);
 
 const getStreakColor = (streak: number): string => {
-  if (streak >= 30)
-    return 'bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400';
-  if (streak >= 14)
-    return 'bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400';
-  if (streak >= 7)
-    return 'bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400';
-  if (streak >= 3)
-    return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400';
-  return 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400';
+  if (streak >= 30) return 'bg-purple-100 text-purple-600';
+  if (streak >= 14) return 'bg-green-100 text-green-600';
+  if (streak >= 7) return 'bg-blue-100 text-blue-600';
+  if (streak >= 3) return 'bg-yellow-100 text-yellow-600';
+  return 'bg-gray-100 text-gray-600';
 };
 
 const loadData = async () => {

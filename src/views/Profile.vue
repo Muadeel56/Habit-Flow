@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Profile</h1>
-      <p class="mt-2 text-gray-600">
+      <h1 class="text-3xl font-bold text-foreground">Profile</h1>
+      <p class="mt-2 text-muted-foreground">
         Manage your account settings and preferences
       </p>
     </div>
 
     <!-- Loading State -->
     <div v-if="profileStore.loading" class="max-w-2xl">
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-card rounded-lg shadow p-6">
         <div class="animate-pulse">
           <div class="flex items-center mb-6">
             <div class="h-16 w-16 bg-gray-300 rounded-full"></div>
@@ -29,11 +29,13 @@
 
     <!-- Error State -->
     <div v-else-if="profileStore.error" class="max-w-2xl">
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <div
+        class="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6"
+      >
         <div class="flex">
           <div class="flex-shrink-0">
             <svg
-              class="h-5 w-5 text-red-400"
+              class="h-5 w-5 text-destructive"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -45,16 +47,16 @@
             </svg>
           </div>
           <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">
+            <h3 class="text-sm font-medium text-destructive">
               Error loading profile
             </h3>
-            <div class="mt-2 text-sm text-red-700">
+            <div class="mt-2 text-sm text-destructive/80">
               {{ profileStore.error }}
             </div>
             <div class="mt-3">
               <button
                 @click="loadProfile"
-                class="bg-red-100 text-red-800 px-3 py-1 rounded text-sm hover:bg-red-200 transition-colors"
+                class="bg-destructive/10 text-destructive px-3 py-1 rounded text-sm hover:bg-destructive/20 transition-colors"
               >
                 Try Again
               </button>
@@ -94,9 +96,11 @@
       </div>
 
       <!-- Profile information -->
-      <div class="bg-white rounded-lg shadow mb-6">
+      <div class="bg-card rounded-lg shadow mb-6">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-gray-900">Profile Information</h2>
+          <h2 class="text-lg font-medium text-foreground">
+            Profile Information
+          </h2>
         </div>
         <div class="p-6">
           <form @submit.prevent="saveProfile">
@@ -116,7 +120,7 @@
                   v-else
                   class="h-16 w-16 bg-gray-300 rounded-full flex items-center justify-center"
                 >
-                  <span class="text-gray-600 font-medium text-xl">
+                  <span class="text-muted-foreground font-medium text-xl">
                     {{ getInitials() }}
                   </span>
                 </div>
@@ -204,16 +208,16 @@
       </div>
 
       <!-- Preferences -->
-      <div class="bg-white rounded-lg shadow">
+      <div class="bg-card rounded-lg shadow">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-gray-900">Preferences</h2>
+          <h2 class="text-lg font-medium text-foreground">Preferences</h2>
         </div>
         <div class="p-6">
           <form @submit.prevent="savePreferences">
             <div class="space-y-4">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-sm font-medium text-gray-900">
+                  <h3 class="text-sm font-medium text-foreground">
                     Weekly Reports
                   </h3>
                   <p class="text-sm text-gray-500">
@@ -242,7 +246,7 @@
       </div>
 
       <!-- Notification Settings -->
-      <div class="bg-white rounded-lg shadow">
+      <div class="bg-card rounded-lg shadow">
         <div class="p-6">
           <NotificationSettings />
         </div>

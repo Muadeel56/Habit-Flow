@@ -3,12 +3,19 @@ import { useAuthStore } from '@/store/auth';
 
 export function setupAuthGuards(router: Router) {
   // Guard for protected routes
-  router.beforeEach(async (to, from, next) => {
+  router.beforeEach(async (to, _from, next) => {
     const authStore = useAuthStore();
 
-    // Initialize auth if not already done
-    if (!authStore.user && !authStore.loading) {
-      await authStore.initAuth();
+    // Wait for auth initialization to complete
+    if (!authStore.initialized) {
+      try {
+        await authStore.initAuth();
+        // Give a small delay to ensure Supabase session is fully loaded
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (error) {
+        console.error('Auth initialization failed:', error);
+        // If auth fails, allow navigation to continue
+      }
     }
 
     // Check if route requires authentication

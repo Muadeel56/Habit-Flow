@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white rounded-lg shadow p-6 mb-6">
+  <div class="bg-card rounded-lg shadow p-6 mb-6">
     <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
       <!-- Search -->
       <div class="flex-1 min-w-0">
         <label
           for="search"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-card-foreground mb-1"
         >
           Search Habits
         </label>
@@ -16,7 +16,7 @@
             :value="filters.search"
             @input="updateSearch"
             placeholder="Search by name or description..."
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-card placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           />
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -42,7 +42,7 @@
       <div class="w-full lg:w-48">
         <label
           for="status-filter"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-card-foreground mb-1"
         >
           Status
         </label>
@@ -64,7 +64,7 @@
       <div class="w-full lg:w-48">
         <label
           for="frequency-filter"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-card-foreground mb-1"
         >
           Frequency
         </label>
@@ -85,7 +85,7 @@
       <div class="w-full lg:w-48">
         <label
           for="sort-by"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-card-foreground mb-1"
         >
           Sort By
         </label>
@@ -108,7 +108,7 @@
       <div class="w-full lg:w-32">
         <label
           for="sort-order"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-card-foreground mb-1"
         >
           Order
         </label>
@@ -126,13 +126,13 @@
       <!-- Reset Button -->
       <div class="w-full lg:w-auto">
         <label
-          class="block text-sm font-medium text-gray-700 mb-1 lg:invisible"
+          class="block text-sm font-medium text-card-foreground mb-1 lg:invisible"
         >
           Reset
         </label>
         <button
           @click="resetAll"
-          class="w-full lg:w-auto px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+          class="w-full lg:w-auto px-4 py-2 text-sm font-medium text-muted-foreground bg-muted border border-border rounded-md hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring transition-colors"
         >
           Reset
         </button>
@@ -140,13 +140,13 @@
     </div>
 
     <!-- Active Filters Summary -->
-    <div v-if="hasActiveFilters" class="mt-4 pt-4 border-t border-gray-200">
+    <div v-if="hasActiveFilters" class="mt-4 pt-4 border-t border-border">
       <div class="flex flex-wrap gap-2 items-center">
-        <span class="text-sm text-gray-600">Active filters:</span>
+        <span class="text-sm text-muted-foreground">Active filters:</span>
 
         <span
           v-if="filters.search"
-          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
         >
           Search: "{{ filters.search }}"
           <button

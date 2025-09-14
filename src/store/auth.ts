@@ -7,12 +7,18 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const session = ref<Session | null>(null);
   const loading = ref(false);
+  const initialized = ref(false);
   const error = ref<string | null>(null);
 
+  // User is authenticated if they have a valid user, regardless of initialization status
   const isAuthenticated = computed(() => !!user.value);
 
   // Initialize auth state
   const initAuth = async () => {
+    if (initialized.value) {
+      return; // Already initialized
+    }
+
     try {
       loading.value = true;
       const {
@@ -22,18 +28,41 @@ export const useAuthStore = defineStore('auth', () => {
       if (currentSession) {
         session.value = currentSession;
         user.value = currentSession.user;
+
+        // Schedule notifications for authenticated user
+        await scheduleNotifications();
       }
 
       // Listen for auth changes
-      supabase.auth.onAuthStateChange((event, session) => {
-        session.value = session;
-        user.value = session?.user ?? null;
+      supabase.auth.onAuthStateChange(async (event, newSession) => {
+        session.value = newSession;
+        user.value = newSession?.user ?? null;
+
+        // Schedule notifications when user signs in
+        if (newSession?.user && event === 'SIGNED_IN') {
+          await scheduleNotifications();
+        }
       });
+
+      initialized.value = true;
     } catch (err) {
       error.value =
         err instanceof Error ? err.message : 'Failed to initialize auth';
+      initialized.value = true; // Mark as initialized even if failed
     } finally {
       loading.value = false;
+    }
+  };
+
+  // Helper function to schedule notifications
+  const scheduleNotifications = async () => {
+    try {
+      // Dynamically import to avoid circular dependencies
+      const { useNotificationsStore } = await import('./notifications');
+      const notificationsStore = useNotificationsStore();
+      notificationsStore.scheduleHabitReminders();
+    } catch (error) {
+      console.warn('Failed to schedule notifications:', error);
     }
   };
 
@@ -130,6 +159,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     session,
     loading,
+    initialized,
     error,
     isAuthenticated,
     initAuth,

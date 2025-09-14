@@ -26,14 +26,14 @@
 
       <!-- Progress Bar (for in-progress achievements) -->
       <div v-if="showProgress && !achievement.is_earned" class="mt-3">
-        <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="w-full bg-muted rounded-full h-2">
           <div
             class="h-2 rounded-full transition-all duration-300"
             :class="progressBarClasses"
             :style="{ width: `${Math.min(progressPercentage, 100)}%` }"
           ></div>
         </div>
-        <p class="text-xs text-gray-500 mt-1">
+        <p class="text-xs text-muted-foreground mt-1">
           {{ currentProgress }}/{{ achievement.requirement_value }}
         </p>
       </div>
@@ -46,7 +46,7 @@
       <!-- Earned Date (for earned achievements) -->
       <div
         v-if="achievement.is_earned && achievement.earned_at"
-        class="text-xs text-green-600 mt-1"
+        class="text-xs text-green-600 dark:text-green-400 mt-1"
       >
         Earned {{ formatDate(achievement.earned_at) }}
       </div>
