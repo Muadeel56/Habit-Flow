@@ -1,52 +1,43 @@
 <template>
-  <div class="bg-white rounded-lg shadow p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-xl font-semibold text-gray-900">
-        {{ isEditing ? 'Edit Habit' : 'Add New Habit' }}
+  <div class="bg-card rounded-lg shadow border border-border p-6">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold text-card-foreground">
+        {{ isEditing ? 'Edit Habit' : 'Create New Habit' }}
       </h2>
       <button
-        v-if="isEditing"
-        @click="$emit('cancel')"
-        class="text-gray-400 hover:text-gray-600 transition-colors"
+        @click="$emit('close')"
+        class="text-muted-foreground hover:text-foreground transition-colors"
       >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          ></path>
-        </svg>
+        <XMarkIcon class="h-5 w-5" />
       </button>
     </div>
 
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Title Field -->
       <div>
-        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
-          Title *
+        <label
+          for="title"
+          class="block text-sm font-medium text-foreground mb-1"
+        >
+          Habit Title *
         </label>
         <input
           id="title"
           v-model="form.title"
           type="text"
           required
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter habit title"
-          :disabled="loading"
+          placeholder="e.g., Drink 8 glasses of water"
+          class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
+          :class="{ 'border-destructive': errors.title }"
         />
+        <p v-if="errors.title" class="mt-1 text-sm text-destructive">
+          {{ errors.title }}
+        </p>
       </div>
 
-      <!-- Description Field -->
       <div>
         <label
           for="description"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-foreground mb-1"
         >
           Description
         </label>
@@ -54,17 +45,15 @@
           id="description"
           v-model="form.description"
           rows="3"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Describe your habit"
-          :disabled="loading"
+          placeholder="Describe your habit and why it's important to you"
+          class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring resize-none"
         ></textarea>
       </div>
 
-      <!-- Frequency Field -->
       <div>
         <label
           for="frequency"
-          class="block text-sm font-medium text-gray-700 mb-1"
+          class="block text-sm font-medium text-foreground mb-1"
         >
           Frequency *
         </label>
@@ -72,61 +61,44 @@
           id="frequency"
           v-model="form.frequency"
           required
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          :disabled="loading"
+          class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
+          :class="{ 'border-destructive': errors.frequency }"
         >
+          <option value="">Select frequency</option>
           <option value="daily">Daily</option>
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
         </select>
+        <p v-if="errors.frequency" class="mt-1 text-sm text-destructive">
+          {{ errors.frequency }}
+        </p>
       </div>
 
-      <!-- Error Message -->
-      <div v-if="error" class="bg-red-50 border border-red-200 rounded-md p-3">
-        <p class="text-sm text-red-600">{{ error }}</p>
+      <!-- Error Display -->
+      <div
+        v-if="error"
+        class="bg-destructive/10 border border-destructive/20 rounded-md p-3"
+      >
+        <p class="text-sm text-destructive">{{ error }}</p>
       </div>
 
-      <!-- Submit Button -->
-      <div class="flex justify-end space-x-3">
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-3 pt-4">
         <button
-          v-if="isEditing"
           type="button"
-          @click="$emit('cancel')"
-          class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-          :disabled="loading"
+          @click="$emit('close')"
+          class="px-4 py-2 text-muted-foreground bg-muted rounded-md hover:bg-muted/80 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="loading || !form.title.trim()"
+          :disabled="loading"
+          class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span v-if="loading" class="flex items-center">
-            <svg
-              class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            {{ isEditing ? 'Updating...' : 'Creating...' }}
-          </span>
-          <span v-else>
-            {{ isEditing ? 'Update Habit' : 'Create Habit' }}
-          </span>
+          {{
+            loading ? 'Saving...' : isEditing ? 'Update Habit' : 'Create Habit'
+          }}
         </button>
       </div>
     </form>

@@ -4,14 +4,15 @@
     <div class="mb-8">
       <div class="flex justify-between items-center">
         <div>
-          <h1 class="text-3xl font-bold text-foreground">Habits</h1>
-          <p class="mt-2 text-muted-foreground">
+          <h1 class="text-3xl font-bold text-gray-900">Habits</h1>
+          <p class="mt-2 text-gray-600">
             Manage your daily habits and track your progress
           </p>
         </div>
         <button
-          @click="showForm = true"
-          class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          v-if="!showForm"
+          @click="showAddForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Add Habit
         </button>
@@ -38,11 +39,11 @@
       v-if="loading"
       class="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50"
     >
-      <div class="bg-card rounded-lg p-6 flex items-center space-x-3">
+      <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
         <div
-          class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"
+          class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"
         ></div>
-        <span class="text-card-foreground">Loading habits...</span>
+        <span class="text-gray-700">Loading habits...</span>
       </div>
     </div>
   </div>
@@ -60,6 +61,11 @@ const habitsStore = useHabitsStore();
 const showForm = ref(false);
 const editingHabit = ref<Habit | null>(null);
 const loading = ref(false);
+
+const showAddForm = () => {
+  editingHabit.value = null;
+  showForm.value = true;
+};
 
 const handleEditHabit = (habit: Habit) => {
   editingHabit.value = habit;

@@ -1,11 +1,11 @@
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
     <!-- Total Habits Card -->
-    <div class="bg-card rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
       <div class="flex items-center">
-        <div class="p-2 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg">
+        <div class="p-2 bg-indigo-100 rounded-lg">
           <svg
-            class="w-6 h-6 text-indigo-600 dark:text-indigo-400"
+            class="w-6 h-6 text-indigo-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -19,11 +19,11 @@
           </svg>
         </div>
         <div class="ml-4">
-          <p class="text-sm font-medium text-muted-foreground">Total Habits</p>
-          <p class="text-2xl font-semibold text-card-foreground">
+          <p class="text-sm font-medium text-gray-600">Total Habits</p>
+          <p class="text-2xl font-semibold text-gray-900">
             {{ totalHabits }}
           </p>
-          <p class="text-xs text-muted-foreground mt-1">
+          <p class="text-xs text-gray-500 mt-1">
             {{ activeHabits }} active, {{ inactiveHabits }} inactive
           </p>
         </div>
@@ -31,11 +31,11 @@
     </div>
 
     <!-- Overall Completion Rate Card -->
-    <div class="bg-card rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
       <div class="flex items-center">
-        <div class="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
+        <div class="p-2 bg-emerald-100 rounded-lg">
           <svg
-            class="w-6 h-6 text-emerald-600 dark:text-emerald-400"
+            class="w-6 h-6 text-emerald-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -49,23 +49,21 @@
           </svg>
         </div>
         <div class="ml-4">
-          <p class="text-sm font-medium text-muted-foreground">
-            Completion Rate
-          </p>
-          <p class="text-2xl font-semibold text-card-foreground">
+          <p class="text-sm font-medium text-gray-600">Completion Rate</p>
+          <p class="text-2xl font-semibold text-gray-900">
             {{ Math.round(overallCompletionRate) }}%
           </p>
-          <p class="text-xs text-muted-foreground mt-1">Overall performance</p>
+          <p class="text-xs text-gray-500 mt-1">Overall performance</p>
         </div>
       </div>
     </div>
 
     <!-- Active Habits Card -->
-    <div class="bg-card rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
       <div class="flex items-center">
-        <div class="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+        <div class="p-2 bg-blue-100 rounded-lg">
           <svg
-            class="w-6 h-6 text-blue-600 dark:text-blue-400"
+            class="w-6 h-6 text-blue-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -79,21 +77,21 @@
           </svg>
         </div>
         <div class="ml-4">
-          <p class="text-sm font-medium text-muted-foreground">Active Habits</p>
-          <p class="text-2xl font-semibold text-card-foreground">
+          <p class="text-sm font-medium text-gray-600">Active Habits</p>
+          <p class="text-2xl font-semibold text-gray-900">
             {{ activeHabits }}
           </p>
-          <p class="text-xs text-muted-foreground mt-1">Currently tracking</p>
+          <p class="text-xs text-gray-500 mt-1">Currently tracking</p>
         </div>
       </div>
     </div>
 
     <!-- Today's Progress Card -->
-    <div class="bg-card rounded-lg shadow-md p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
       <div class="flex items-center">
-        <div class="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
+        <div class="p-2 bg-orange-100 rounded-lg">
           <svg
-            class="w-6 h-6 text-orange-600 dark:text-orange-400"
+            class="w-6 h-6 text-orange-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -107,13 +105,11 @@
           </svg>
         </div>
         <div class="ml-4">
-          <p class="text-sm font-medium text-muted-foreground">
-            Today's Progress
-          </p>
-          <p class="text-2xl font-semibold text-card-foreground">
+          <p class="text-sm font-medium text-gray-600">Today's Progress</p>
+          <p class="text-2xl font-semibold text-gray-900">
             {{ todayCompletions }}
           </p>
-          <p class="text-xs text-muted-foreground mt-1">
+          <p class="text-xs text-gray-500 mt-1">
             {{ Math.round(todayCompletionRate) }}% completed today
           </p>
         </div>

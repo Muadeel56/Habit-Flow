@@ -3,19 +3,20 @@ import './style.css';
 import App from './App.vue';
 import { pinia } from './store';
 import router from './router';
-import { useAuthStore, useHabitsStore, useNotificationsStore } from './store';
+import { useHabitsStore, useNotificationsStore, useThemeStore } from './store';
 
 const app = createApp(App);
 
 // Install Pinia
 app.use(pinia);
 
+// Initialize theme immediately after Pinia is installed
+// This ensures theme is applied before any components render
+const themeStore = useThemeStore();
+themeStore.initTheme();
+
 // Install Router
 app.use(router);
-
-// Initialize auth store
-const authStore = useAuthStore();
-authStore.initAuth();
 
 // Initialize notifications and set up service worker message handling
 const initializeNotifications = async () => {
@@ -53,11 +54,6 @@ const initializeNotifications = async () => {
         }
       }
     });
-  }
-
-  // Schedule initial reminders if user is authenticated
-  if (authStore.isAuthenticated) {
-    notificationsStore.scheduleHabitReminders();
   }
 };
 

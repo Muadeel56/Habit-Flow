@@ -179,6 +179,11 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Skip chrome-extension and other unsupported schemes
+  if (!event.request.url.startsWith('http')) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(response => {
       // Return cached version if available
@@ -187,21 +192,49 @@ self.addEventListener('fetch', event => {
       }
 
       // Otherwise fetch from network
-      return fetch(event.request).then(response => {
-        // Don't cache non-successful responses
-        if (!response || response.status !== 200 || response.type !== 'basic') {
+      return fetch(event.request)
+        .then(response => {
+          // Don't cache non-successful responses or non-basic types
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== 'basic'
+          ) {
+            return response;
+          }
+
+          // Skip caching for chrome-extension requests
+          if (event.request.url.startsWith('chrome-extension')) {
+            return response;
+          }
+
+          // Clone the response for caching
+          const responseToCache = response.clone();
+
+          caches
+            .open(CACHE_NAME)
+            .then(cache => {
+              try {
+                cache.put(event.request, responseToCache);
+              } catch (error) {
+                console.warn(
+                  'Failed to cache request:',
+                  event.request.url,
+                  error
+                );
+              }
+            })
+            .catch(error => {
+              console.warn('Cache operation failed:', error);
+            });
+
           return response;
-        }
-
-        // Clone the response for caching
-        const responseToCache = response.clone();
-
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
+        })
+        .catch(error => {
+          console.warn('Fetch failed:', event.request.url, error);
+          // Return a fallback or just let it fail gracefully
+          throw error;
         });
-
-        return response;
-      });
     })
   );
 });

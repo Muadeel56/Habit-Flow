@@ -6,32 +6,34 @@
       class="fixed inset-0 z-40 lg:hidden"
       @click="$emit('close')"
     >
-      <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
+      <div class="fixed inset-0 bg-black bg-opacity-75"></div>
     </div>
 
     <!-- Sidebar -->
     <div
       :class="[
-        'fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0',
+        'fixed inset-y-0 left-0 z-50 w-64 bg-card shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0',
         isOpen ? 'translate-x-0' : '-translate-x-full',
       ]"
     >
       <div class="flex flex-col h-full">
         <!-- Sidebar header -->
         <div
-          class="flex items-center justify-between h-16 px-6 border-b border-gray-200"
+          class="flex items-center justify-between h-16 px-6 border-b border-border"
         >
           <div class="flex items-center">
             <div
-              class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center"
+              class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center"
             >
-              <span class="text-white font-bold text-sm">HF</span>
+              <span class="text-primary-foreground font-bold text-sm">HF</span>
             </div>
-            <h2 class="ml-3 text-lg font-semibold text-gray-900">Habit Flow</h2>
+            <h2 class="ml-3 text-lg font-semibold text-foreground">
+              Habit Flow
+            </h2>
           </div>
           <button
             @click="$emit('close')"
-            class="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+            class="lg:hidden p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent"
             aria-label="Close sidebar"
           >
             <svg
@@ -54,8 +56,8 @@
         <nav class="flex-1 px-4 py-6 space-y-2">
           <router-link
             to="/dashboard"
-            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group"
-            active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+            class="flex items-center px-4 py-3 text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors group"
+            active-class="bg-accent text-accent-foreground border-r-2 border-primary"
             @click="$emit('close')"
           >
             <svg
@@ -82,8 +84,8 @@
 
           <router-link
             to="/habits"
-            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group"
-            active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+            class="flex items-center px-4 py-3 text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors group"
+            active-class="bg-accent text-accent-foreground border-r-2 border-primary"
             @click="$emit('close')"
           >
             <svg
@@ -104,8 +106,8 @@
 
           <router-link
             to="/achievements"
-            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group"
-            active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+            class="flex items-center px-4 py-3 text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors group"
+            active-class="bg-accent text-accent-foreground border-r-2 border-primary"
             @click="$emit('close')"
           >
             <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
@@ -118,8 +120,8 @@
 
           <router-link
             to="/profile"
-            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors group"
-            active-class="bg-blue-50 text-blue-700 border-r-2 border-blue-600"
+            class="flex items-center px-4 py-3 text-foreground rounded-lg hover:bg-accent hover:text-accent-foreground transition-colors group"
+            active-class="bg-accent text-accent-foreground border-r-2 border-primary"
             @click="$emit('close')"
           >
             <svg
@@ -140,16 +142,16 @@
         </nav>
 
         <!-- Sidebar footer -->
-        <div class="p-4 border-t border-gray-200">
+        <div class="p-4 border-t border-border">
           <div class="flex items-center">
             <div
-              class="h-8 w-8 bg-gray-300 rounded-full flex items-center justify-center"
+              class="h-8 w-8 bg-muted rounded-full flex items-center justify-center"
             >
-              <span class="text-gray-600 font-medium text-sm">U</span>
+              <span class="text-muted-foreground font-medium text-sm">U</span>
             </div>
             <div class="ml-3">
-              <p class="text-sm font-medium text-gray-900">User Name</p>
-              <p class="text-xs text-gray-500">user@example.com</p>
+              <p class="text-sm font-medium text-foreground">User Name</p>
+              <p class="text-xs text-muted-foreground">user@example.com</p>
             </div>
           </div>
         </div>

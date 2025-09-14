@@ -2,23 +2,25 @@
   <div class="space-y-8">
     <!-- Header -->
     <div>
-      <h1 class="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-      <p class="mt-2 text-gray-600">Track your habit progress and insights</p>
+      <h1 class="text-3xl font-bold text-foreground">Analytics Dashboard</h1>
+      <p class="mt-2 text-muted-foreground">
+        Track your habit progress and insights
+      </p>
     </div>
 
     <!-- Loading state -->
     <div v-if="loading" class="flex justify-center py-12">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
       ></div>
     </div>
 
     <!-- Error state -->
     <div v-else-if="error" class="text-center py-12">
-      <div class="text-red-600 mb-4">{{ error }}</div>
+      <div class="text-destructive mb-4">{{ error }}</div>
       <button
         @click="loadData"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
       >
         Retry
       </button>
@@ -44,9 +46,13 @@
         <BadgeWidget />
 
         <!-- Placeholder for future widget -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Coming Soon</h3>
-          <p class="text-gray-600">More analytics features coming soon!</p>
+        <div class="bg-card rounded-lg shadow-sm border border-border p-6">
+          <h3 class="text-lg font-semibold text-card-foreground mb-4">
+            Coming Soon
+          </h3>
+          <p class="text-muted-foreground">
+            More analytics features coming soon!
+          </p>
         </div>
       </div>
 
@@ -56,13 +62,15 @@
       </div>
 
       <!-- Recent activity -->
-      <div class="bg-white rounded-lg shadow-md">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-gray-900">Recent Activity</h2>
+      <div class="bg-card rounded-lg shadow-md">
+        <div class="px-6 py-4 border-b border-border">
+          <h2 class="text-lg font-medium text-card-foreground">
+            Recent Activity
+          </h2>
         </div>
         <div class="p-6">
           <div v-if="recentCompletions.length === 0" class="text-center py-8">
-            <p class="text-gray-500">No recent activity</p>
+            <p class="text-muted-foreground">No recent activity</p>
           </div>
           <div v-else class="space-y-4">
             <div
@@ -72,28 +80,16 @@
             >
               <div class="flex-shrink-0">
                 <div
-                  class="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center"
+                  class="h-8 w-8 bg-secondary/10 rounded-full flex items-center justify-center"
                 >
-                  <svg
-                    class="h-4 w-4 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
+                  <CheckCircleIcon class="h-4 w-4 text-secondary" />
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm text-gray-900">
+                <p class="text-sm text-card-foreground">
                   Completed "{{ getHabitTitle(completion.habit_id) }}"
                 </p>
-                <p class="text-xs text-gray-500">
+                <p class="text-xs text-muted-foreground">
                   {{ formatRelativeTime(completion.completed_at) }}
                 </p>
               </div>
@@ -114,6 +110,7 @@ import StreakWidget from '../components/analytics/StreakWidget.vue';
 import HabitAnalytics from '../components/analytics/HabitAnalytics.vue';
 import ProgressOverviewCards from '../components/analytics/ProgressOverviewCards.vue';
 import BadgeWidget from '../components/achievements/BadgeWidget.vue';
+import { CheckCircleIcon } from '@heroicons/vue/24/outline';
 
 const analyticsStore = useAnalyticsStore();
 const habitsStore = useHabitsStore();

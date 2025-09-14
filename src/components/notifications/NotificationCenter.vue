@@ -1,10 +1,8 @@
 <template>
   <div class="notification-center">
     <div class="center-header">
-      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-        Notification Center
-      </h3>
-      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+      <h3 class="text-lg font-semibold text-foreground">Notification Center</h3>
+      <p class="text-sm text-muted-foreground mt-1">
         Manage your scheduled reminders and notifications
       </p>
     </div>
@@ -44,30 +42,24 @@
 
     <!-- Notification Stats -->
     <div class="stats-grid mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div
-        class="stat-card bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700"
-      >
+      <div class="stat-card bg-card p-4 rounded-lg border border-border">
         <div class="flex items-center">
           <BellIcon class="h-8 w-8 text-blue-500" />
           <div class="ml-3">
-            <p class="text-sm text-gray-600 dark:text-gray-400">Scheduled</p>
-            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+            <p class="text-sm text-muted-foreground">Scheduled</p>
+            <p class="text-2xl font-bold text-card-foreground">
               {{ notificationsStore.scheduledNotifications.length }}
             </p>
           </div>
         </div>
       </div>
 
-      <div
-        class="stat-card bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700"
-      >
+      <div class="stat-card bg-card p-4 rounded-lg border border-border">
         <div class="flex items-center">
           <ClockIcon class="h-8 w-8 text-green-500" />
           <div class="ml-3">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Next Reminder
-            </p>
-            <p class="text-sm font-semibold text-gray-900 dark:text-white">
+            <p class="text-sm text-muted-foreground">Next Reminder</p>
+            <p class="text-sm font-semibold text-card-foreground">
               {{ nextReminderTime }}
             </p>
           </div>

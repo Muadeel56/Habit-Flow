@@ -5,21 +5,21 @@
       class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
     >
       <div
-        class="onboarding-modal bg-white rounded-xl shadow-2xl max-w-md w-full mx-auto"
+        class="onboarding-modal bg-card rounded-xl shadow-2xl max-w-md w-full mx-auto"
       >
         <!-- Header -->
-        <div class="modal-header p-6 text-center border-b border-gray-200">
+        <div class="modal-header p-6 text-center border-b border-border">
           <div class="mb-4">
             <div
-              class="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center"
+              class="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center"
             >
-              <BellIcon class="h-8 w-8 text-blue-600" />
+              <BellIcon class="h-8 w-8 text-primary" />
             </div>
           </div>
-          <h3 class="text-xl font-semibold text-gray-900">
+          <h3 class="text-xl font-semibold text-card-foreground">
             Enable Habit Reminders
           </h3>
-          <p class="text-sm text-gray-600 mt-2">
+          <p class="text-sm text-muted-foreground mt-2">
             Never miss a habit with timely notifications
           </p>
         </div>
@@ -34,10 +34,10 @@
                   class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
                 />
                 <div>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-card-foreground">
                     Daily Reminders
                   </p>
-                  <p class="text-xs text-gray-600">
+                  <p class="text-xs text-muted-foreground">
                     Get notified at your preferred time
                   </p>
                 </div>
@@ -48,10 +48,10 @@
                   class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
                 />
                 <div>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-card-foreground">
                     Streak Celebrations
                   </p>
-                  <p class="text-xs text-gray-600">
+                  <p class="text-xs text-muted-foreground">
                     Celebrate your achievements
                   </p>
                 </div>
@@ -62,10 +62,10 @@
                   class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
                 />
                 <div>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-card-foreground">
                     Complete from Notifications
                   </p>
-                  <p class="text-xs text-gray-600">
+                  <p class="text-xs text-muted-foreground">
                     Mark habits complete without opening the app
                   </p>
                 </div>
@@ -76,8 +76,10 @@
                   class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
                 />
                 <div>
-                  <p class="text-sm font-medium text-gray-900">Quiet Hours</p>
-                  <p class="text-xs text-gray-600">
+                  <p class="text-sm font-medium text-card-foreground">
+                    Quiet Hours
+                  </p>
+                  <p class="text-xs text-muted-foreground">
                     Respect your sleep and focus time
                   </p>
                 </div>
@@ -113,13 +115,13 @@
             <!-- Browser Instructions (shown when notifications are blocked) -->
             <div
               v-if="showInstructions"
-              class="browser-instructions bg-gray-50 rounded-lg p-4"
+              class="browser-instructions bg-muted rounded-lg p-4"
             >
-              <h4 class="text-sm font-medium text-gray-900 mb-2">
+              <h4 class="text-sm font-medium text-card-foreground mb-2">
                 Enable Notifications in {{ browserName }}:
               </h4>
               <ol
-                class="text-xs text-gray-600 space-y-1 list-decimal list-inside"
+                class="text-xs text-muted-foreground space-y-1 list-decimal list-inside"
               >
                 <li
                   v-for="instruction in browserInstructions"
@@ -133,7 +135,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="modal-actions p-6 border-t border-gray-200">
+        <div class="modal-actions p-6 border-t border-border">
           <div class="flex space-x-3">
             <button
               v-if="!notificationsStore.permission.denied"
@@ -158,7 +160,7 @@
 
             <button
               @click="skipOnboarding"
-              class="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              class="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               Maybe Later
             </button>
@@ -166,7 +168,7 @@
 
           <div class="mt-3 text-center">
             <label
-              class="flex items-center justify-center space-x-2 text-xs text-gray-600"
+              class="flex items-center justify-center space-x-2 text-xs text-muted-foreground"
             >
               <input
                 type="checkbox"
@@ -353,10 +355,10 @@ onMounted(() => {
 }
 
 .browser-instructions {
-  @apply border border-gray-200;
+  @apply border border-border;
 }
 
 .modal-actions {
-  @apply bg-gray-50;
+  @apply bg-muted;
 }
 </style>

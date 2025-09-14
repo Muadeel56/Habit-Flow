@@ -11,3 +11,4 @@ export * from './habits';
 export * from './analytics';
 export * from './achievements';
 export * from './notifications';
+export * from './theme';

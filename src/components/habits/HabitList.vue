@@ -25,8 +25,10 @@
           d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
         ></path>
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">No habits yet</h3>
-      <p class="mt-1 text-sm text-gray-500">
+      <h3 class="mt-2 text-sm font-medium text-card-foreground">
+        No habits yet
+      </h3>
+      <p class="mt-1 text-sm text-muted-foreground">
         Get started by creating your first habit.
       </p>
     </div>
@@ -36,12 +38,14 @@
       <div
         v-for="habit in habitsWithStreaks"
         :key="habit.id"
-        class="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow"
+        class="bg-card rounded-lg shadow p-6 hover:shadow-md transition-shadow"
         :class="{ 'ring-2 ring-green-200': habit.is_completed_today }"
       >
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold text-gray-900">{{ habit.title }}</h3>
+          <h3 class="text-lg font-semibold text-card-foreground">
+            {{ habit.title }}
+          </h3>
           <div class="flex items-center space-x-2">
             <span
               :class="[
@@ -63,7 +67,7 @@
         </div>
 
         <!-- Description -->
-        <p v-if="habit.description" class="text-gray-600 mb-4">
+        <p v-if="habit.description" class="text-muted-foreground mb-4">
           {{ habit.description }}
         </p>
 
@@ -77,25 +81,25 @@
         </div>
 
         <!-- Streak Information -->
-        <div v-if="habit.streak" class="mb-4 p-3 bg-gray-50 rounded-lg">
+        <div v-if="habit.streak" class="mb-4 p-3 bg-muted rounded-lg">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-4">
               <div class="text-center">
                 <div class="text-lg font-bold text-orange-600">
                   {{ habit.streak.current_streak }}
                 </div>
-                <div class="text-xs text-gray-500">Current</div>
+                <div class="text-xs text-muted-foreground">Current</div>
               </div>
               <div class="text-center">
-                <div class="text-lg font-bold text-purple-600">
+                <div class="text-lg font-bold text-primary">
                   {{ habit.streak.best_streak }}
                 </div>
-                <div class="text-xs text-gray-500">Best</div>
+                <div class="text-xs text-muted-foreground">Best</div>
               </div>
             </div>
             <div class="text-right">
-              <div class="text-sm font-medium text-gray-700">Streak</div>
-              <div class="text-xs text-gray-500">
+              <div class="text-sm font-medium text-foreground">Streak</div>
+              <div class="text-xs text-muted-foreground">
                 {{ formatLastCompleted(habit.streak.last_completed_date) }}
               </div>
             </div>
@@ -169,7 +173,7 @@
             </button>
             <button
               @click="handleDelete(habit)"
-              class="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+              class="text-destructive hover:text-destructive/80 text-sm font-medium transition-colors"
               :disabled="loading"
             >
               Delete
@@ -179,7 +183,7 @@
 
         <!-- Created Date -->
         <div class="mt-4 pt-4 border-t border-gray-100">
-          <p class="text-xs text-gray-500">
+          <p class="text-xs text-muted-foreground">
             Created {{ formatDate(habit.created_at) }}
           </p>
         </div>
@@ -189,12 +193,12 @@
     <!-- Error Message -->
     <div
       v-if="error"
-      class="mt-4 bg-red-50 border border-red-200 rounded-md p-3"
+      class="mt-4 bg-destructive/10 border border-destructive/20 rounded-md p-3"
     >
-      <p class="text-sm text-red-600">{{ error }}</p>
+      <p class="text-sm text-destructive">{{ error }}</p>
       <button
         @click="clearError"
-        class="mt-2 text-sm text-red-600 hover:text-red-700 underline"
+        class="mt-2 text-sm text-destructive hover:text-destructive/80 underline"
       >
         Dismiss
       </button>
