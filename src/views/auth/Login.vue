@@ -17,6 +17,7 @@
           <router-link
             to="/signup"
             class="font-medium text-primary hover:text-primary/80"
+            data-cy="signup-link"
           >
             create a new account
           </router-link>
@@ -37,8 +38,13 @@
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input placeholder-muted-foreground text-foreground bg-background rounded-t-md focus:outline-none focus:ring-ring focus:border-ring focus:z-10 sm:text-sm"
               :class="{ 'border-destructive': errors.email }"
               placeholder="Email address"
+              data-cy="email-input"
             />
-            <p v-if="errors.email" class="mt-1 text-sm text-destructive">
+            <p
+              v-if="errors.email"
+              class="mt-1 text-sm text-destructive"
+              data-cy="error-message"
+            >
               {{ errors.email }}
             </p>
           </div>
@@ -55,14 +61,23 @@
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input placeholder-muted-foreground text-foreground bg-background rounded-b-md focus:outline-none focus:ring-ring focus:border-ring focus:z-10 sm:text-sm"
               :class="{ 'border-destructive': errors.password }"
               placeholder="Password"
+              data-cy="password-input"
             />
-            <p v-if="errors.password" class="mt-1 text-sm text-destructive">
+            <p
+              v-if="errors.password"
+              class="mt-1 text-sm text-destructive"
+              data-cy="error-message"
+            >
               {{ errors.password }}
             </p>
           </div>
         </div>
 
-        <div v-if="authStore.error" class="rounded-md bg-destructive/10 p-4">
+        <div
+          v-if="authStore.error"
+          class="rounded-md bg-destructive/10 p-4"
+          data-cy="error-message"
+        >
           <div class="flex">
             <div class="ml-3">
               <h3 class="text-sm font-medium text-destructive">
@@ -77,13 +92,14 @@
             type="submit"
             :disabled="authStore.loading"
             class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+            data-cy="login-button"
           >
             <span
               v-if="authStore.loading"
               class="absolute left-0 inset-y-0 flex items-center pl-3"
             >
               <svg
-                class="animate-spin h-5 w-5 text-primary-foreground"
+                class="h-5 w-5 text-primary-foreground animate-spin"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -112,7 +128,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/store/auth';
 import ThemeToggle from '@/components/theme/ThemeToggle.vue';
@@ -125,25 +141,36 @@ const form = reactive({
   password: '',
 });
 
-const errors = ref<Record<string, string>>({});
+const errors = reactive({
+  email: '',
+  password: '',
+});
 
 const validateForm = () => {
-  errors.value = {};
+  errors.email = '';
+  errors.password = '';
 
-  // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!form.email) {
-    errors.value.email = 'Email is required';
-  } else if (!emailRegex.test(form.email)) {
-    errors.value.email = 'Please enter a valid email address';
+    errors.email = 'Email is required';
+    return false;
   }
 
-  // Password validation
+  if (!form.email.includes('@')) {
+    errors.email = 'Please enter a valid email address';
+    return false;
+  }
+
   if (!form.password) {
-    errors.value.password = 'Password is required';
+    errors.password = 'Password is required';
+    return false;
   }
 
-  return Object.keys(errors.value).length === 0;
+  if (form.password.length < 6) {
+    errors.password = 'Password must be at least 6 characters';
+    return false;
+  }
+
+  return true;
 };
 
 const handleSubmit = async () => {
@@ -151,9 +178,10 @@ const handleSubmit = async () => {
     return;
   }
 
-  authStore.clearError();
-
-  const result = await authStore.signIn(form.email, form.password);
+  const result = await authStore.signIn({
+    email: form.email,
+    password: form.password,
+  });
 
   if (result.success) {
     router.push('/dashboard');

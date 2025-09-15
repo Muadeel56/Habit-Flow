@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div data-cy="habits-page">
     <!-- Header -->
     <div class="mb-8">
       <div class="flex justify-between items-center">
-        <div>
+        <div data-cy="habits-page">
           <h1 class="text-3xl font-bold text-foreground">Habits</h1>
           <p class="mt-2 text-muted-foreground">
             Manage your daily habits and track your progress
@@ -12,6 +12,7 @@
         <button
           @click="showForm = true"
           class="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          data-cy="add-habit-button"
         >
           Add Habit
         </button>
