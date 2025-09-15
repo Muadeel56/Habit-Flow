@@ -178,10 +178,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  const result = await authStore.signIn({
-    email: form.email,
-    password: form.password,
-  });
+  const result = await authStore.signIn(form.email, form.password);
 
   if (result.success) {
     router.push('/dashboard');

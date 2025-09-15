@@ -143,7 +143,7 @@
           <AchievementBadge
             v-for="achievement in recentAchievements.slice(0, 5)"
             :key="achievement.achievement_id"
-            :achievement="achievement.achievement!"
+            :achievement="{ ...achievement.achievement!, is_earned: false }"
             size="small"
             @click="showAchievementDetail"
           />

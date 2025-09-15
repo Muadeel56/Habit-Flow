@@ -1,0 +1,16 @@
+name = "habit-flow"
+compatibility_date = "2024-01-15"
+
+[env.production]
+name = "habit-flow"
+
+[[env.production.routes]]
+pattern = "habitflow.app/*"
+zone_name = "habitflow.app"
+
+[build]
+command = "npm run build"
+publish = "dist"
+
+[build.environment_variables]
+NODE_VERSION = "18"

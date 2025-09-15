@@ -377,9 +377,7 @@ const savePreferences = async () => {
 };
 
 const handleAvatarChange = async (event: Event) => {
-  const input = event.target as {
-    files?: { [key: number]: { size: number; type: string; name: string } };
-  };
+  const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
 
   if (file) {
