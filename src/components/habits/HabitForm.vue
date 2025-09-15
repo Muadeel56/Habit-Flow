@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <form @submit.prevent="handleSubmit" class="space-y-4">
+    <form @submit.prevent="handleSubmit" data-cy="habit-form" class="space-y-4">
       <div>
         <label
           for="title"
@@ -22,6 +22,7 @@
         </label>
         <input
           id="title"
+          data-cy="habit-title-input"
           v-model="form.title"
           type="text"
           required
@@ -43,6 +44,7 @@
         </label>
         <textarea
           id="description"
+          data-cy="habit-description-input"
           v-model="form.description"
           rows="3"
           placeholder="Describe your habit and why it's important to you"
@@ -59,6 +61,7 @@
         </label>
         <select
           id="frequency"
+          data-cy="habit-frequency-select"
           v-model="form.frequency"
           required
           class="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
@@ -93,6 +96,7 @@
         </button>
         <button
           type="submit"
+          data-cy="save-habit-button"
           :disabled="loading"
           class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >

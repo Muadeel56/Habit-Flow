@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-card rounded-lg shadow p-6 mb-6">
+  <div class="bg-card rounded-lg shadow p-6 mb-6" data-cy="habit-filters">
     <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
       <!-- Search -->
       <div class="flex-1 min-w-0">
@@ -52,10 +52,12 @@
           @change="updateStatus"
           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
         >
-          <option value="all">All Habits</option>
-          <option value="active">Active</option>
+          <option value="all" data-cy="filter-all">All Habits</option>
+          <option value="active" data-cy="filter-active">Active</option>
           <option value="inactive">Inactive</option>
-          <option value="completed_today">Completed Today</option>
+          <option value="completed_today" data-cy="filter-completed">
+            Completed Today
+          </option>
           <option value="not_completed_today">Not Done Today</option>
         </select>
       </div>
