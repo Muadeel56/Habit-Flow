@@ -30,20 +30,66 @@
     <div v-else class="space-y-8">
       <!-- Stats cards -->
       <!-- Progress Overview Cards -->
-      <ProgressOverviewCards />
+      <Suspense>
+        <template #default>
+          <ProgressOverviewCards />
+        </template>
+        <template #fallback>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div
+              v-for="i in 4"
+              :key="i"
+              class="bg-card rounded-lg p-6 animate-pulse"
+            >
+              <div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
+              <div class="h-8 bg-muted rounded w-1/2"></div>
+            </div>
+          </div>
+        </template>
+      </Suspense>
 
       <!-- Charts section -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Completion chart -->
-        <CompletionChart />
+        <Suspense>
+          <template #default>
+            <CompletionChart />
+          </template>
+          <template #fallback>
+            <div class="bg-card rounded-lg p-6">
+              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
+              <div class="h-64 bg-muted rounded animate-pulse"></div>
+            </div>
+          </template>
+        </Suspense>
 
         <!-- Streak widget -->
-        <StreakWidget />
+        <Suspense>
+          <template #default>
+            <StreakWidget />
+          </template>
+          <template #fallback>
+            <div class="bg-card rounded-lg p-6">
+              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
+              <div class="h-64 bg-muted rounded animate-pulse"></div>
+            </div>
+          </template>
+        </Suspense>
       </div>
 
       <!-- Achievements Widget -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <BadgeWidget />
+        <Suspense>
+          <template #default>
+            <BadgeWidget />
+          </template>
+          <template #fallback>
+            <div class="bg-card rounded-lg p-6">
+              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
+              <div class="h-32 bg-muted rounded animate-pulse"></div>
+            </div>
+          </template>
+        </Suspense>
 
         <!-- Placeholder for future widget -->
         <div class="bg-card rounded-lg shadow-sm border border-border p-6">
@@ -58,7 +104,17 @@
 
       <!-- Detailed analytics -->
       <div class="grid grid-cols-1 gap-8">
-        <HabitAnalytics />
+        <Suspense>
+          <template #default>
+            <HabitAnalytics />
+          </template>
+          <template #fallback>
+            <div class="bg-card rounded-lg p-6">
+              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
+              <div class="h-96 bg-muted rounded animate-pulse"></div>
+            </div>
+          </template>
+        </Suspense>
       </div>
 
       <!-- Recent activity -->
@@ -102,15 +158,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
 import { useAnalyticsStore } from '../store/analytics';
 import { useHabitsStore } from '../store/habits';
-import CompletionChart from '../components/analytics/CompletionChart.vue';
-import StreakWidget from '../components/analytics/StreakWidget.vue';
-import HabitAnalytics from '../components/analytics/HabitAnalytics.vue';
-import ProgressOverviewCards from '../components/analytics/ProgressOverviewCards.vue';
-import BadgeWidget from '../components/achievements/BadgeWidget.vue';
 import { CheckCircleIcon } from '@heroicons/vue/24/outline';
+
+// Lazy load components
+const CompletionChart = defineAsyncComponent(
+  () => import('../components/analytics/CompletionChart.vue')
+);
+const StreakWidget = defineAsyncComponent(
+  () => import('../components/analytics/StreakWidget.vue')
+);
+const HabitAnalytics = defineAsyncComponent(
+  () => import('../components/analytics/HabitAnalytics.vue')
+);
+const ProgressOverviewCards = defineAsyncComponent(
+  () => import('../components/analytics/ProgressOverviewCards.vue')
+);
+const BadgeWidget = defineAsyncComponent(
+  () => import('../components/achievements/BadgeWidget.vue')
+);
 
 const analyticsStore = useAnalyticsStore();
 const habitsStore = useHabitsStore();

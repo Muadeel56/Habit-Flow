@@ -1,10 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Dashboard from '../views/Dashboard.vue';
-import Habits from '../views/Habits.vue';
-import Profile from '../views/Profile.vue';
-import Achievements from '../views/Achievements.vue';
-import Login from '../views/auth/Login.vue';
-import SignUp from '../views/auth/SignUp.vue';
 import { setupAuthGuards } from './guards';
 
 const routes = [
@@ -15,37 +9,37 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () => import('../views/auth/Login.vue'),
     meta: { requiresAuth: false },
   },
   {
     path: '/signup',
     name: 'SignUp',
-    component: SignUp,
+    component: () => import('../views/auth/SignUp.vue'),
     meta: { requiresAuth: false },
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: Dashboard,
+    component: () => import('../views/Dashboard.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/habits',
     name: 'Habits',
-    component: Habits,
+    component: () => import('../views/Habits.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/profile',
     name: 'Profile',
-    component: Profile,
+    component: () => import('../views/Profile.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/achievements',
     name: 'Achievements',
-    component: Achievements,
+    component: () => import('../views/Achievements.vue'),
     meta: { requiresAuth: true },
   },
 ];

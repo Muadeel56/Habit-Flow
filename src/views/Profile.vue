@@ -248,7 +248,20 @@
       <!-- Notification Settings -->
       <div class="bg-card rounded-lg shadow">
         <div class="p-6">
-          <NotificationSettings />
+          <Suspense>
+            <template #default>
+              <NotificationSettings />
+            </template>
+            <template #fallback>
+              <div class="space-y-4">
+                <div class="h-6 bg-muted rounded w-1/3 animate-pulse"></div>
+                <div class="space-y-2">
+                  <div class="h-4 bg-muted rounded w-full animate-pulse"></div>
+                  <div class="h-4 bg-muted rounded w-3/4 animate-pulse"></div>
+                </div>
+              </div>
+            </template>
+          </Suspense>
         </div>
       </div>
     </div>
@@ -256,9 +269,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  watch,
+  defineAsyncComponent,
+} from 'vue';
 import { useProfileStore } from '../store/profile';
-import NotificationSettings from '../components/profile/NotificationSettings.vue';
+
+// Lazy load component
+const NotificationSettings = defineAsyncComponent(
+  () => import('../components/profile/NotificationSettings.vue')
+);
 
 const profileStore = useProfileStore();
 const showSuccessMessage = ref(false);

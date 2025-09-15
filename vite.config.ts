@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
@@ -10,6 +11,26 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks for better caching
+          vendor: ['vue', 'vue-router', 'pinia'],
+          // UI libraries
+          ui: ['@heroicons/vue'],
+          // Analytics and charts
+          charts: ['chart.js', 'vue-chartjs'],
+          // Supabase
+          supabase: ['@supabase/supabase-js'],
+        },
+      },
+    },
+    // Enable source maps for better debugging
+    sourcemap: true,
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
   },
   server: {
     port: 5174,
