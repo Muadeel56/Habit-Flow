@@ -340,7 +340,8 @@ const getTimeUntilNotification = (scheduledTime: Date) => {
 
 const getStatusBadgeClass = (notification: Record<string, unknown>) => {
   const now = new Date();
-  const timeDiff = notification.scheduledTime.getTime() - now.getTime();
+  const timeDiff =
+    (notification.scheduledTime as Date).getTime() - now.getTime();
 
   if (timeDiff <= 0) {
     return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300';

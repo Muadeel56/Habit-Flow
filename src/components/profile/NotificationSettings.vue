@@ -46,7 +46,12 @@
             <input
               type="checkbox"
               v-model="localSettings.pushEnabled"
-              @change="updateSetting('pushEnabled', $event.target.checked)"
+              @change="
+                updateSetting(
+                  'pushEnabled',
+                  ($event.target as HTMLInputElement).checked
+                )
+              "
               class="sr-only peer"
               :disabled="!notificationsStore.permission.granted"
             />
@@ -72,7 +77,12 @@
             <input
               type="checkbox"
               v-model="localSettings.emailEnabled"
-              @change="updateSetting('emailEnabled', $event.target.checked)"
+              @change="
+                updateSetting(
+                  'emailEnabled',
+                  ($event.target as HTMLInputElement).checked
+                )
+              "
               class="sr-only peer"
               :disabled="!notificationsStore.permission.granted"
             />
@@ -93,7 +103,12 @@
         </p>
         <select
           :value="localSettings.reminderTime"
-          @change="updateSetting('reminderTime', $event.target.value)"
+          @change="
+            updateSetting(
+              'reminderTime',
+              ($event.target as HTMLSelectElement).value
+            )
+          "
           class="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-ring"
         >
           <option value="09:00">9:00 AM</option>

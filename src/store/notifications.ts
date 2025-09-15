@@ -226,8 +226,7 @@ export const useNotificationsStore = defineStore('notifications', () => {
           const timeUntilNotification = scheduledTime.getTime() - Date.now();
 
           if (timeUntilNotification > 0) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const timeoutId = setTimeout(() => {
+            setTimeout(() => {
               sendNotification(`Time for ${habit.title}!`, {
                 body:
                   habit.description ||
