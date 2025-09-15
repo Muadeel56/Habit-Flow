@@ -5,7 +5,7 @@
         {{ isEditing ? 'Edit Habit' : 'Create New Habit' }}
       </h2>
       <button
-        @click="$emit('close')"
+        @click="$emit('cancel')"
         class="text-muted-foreground hover:text-foreground transition-colors"
       >
         <XMarkIcon class="h-5 w-5" />
@@ -89,7 +89,7 @@
       <div class="flex justify-end space-x-3 pt-4">
         <button
           type="button"
-          @click="$emit('close')"
+          @click="$emit('cancel')"
           class="px-4 py-2 text-muted-foreground bg-muted rounded-md hover:bg-muted/80 transition-colors"
         >
           Cancel
@@ -110,7 +110,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, reactive, watch, onMounted } from 'vue';
+import { XMarkIcon } from '@heroicons/vue/24/outline';
 import {
   useHabitsStore,
   type CreateHabitData,
@@ -146,6 +147,12 @@ const form = ref<CreateHabitData>({
 const loading = ref(false);
 const error = ref<string | null>(null);
 
+// Form validation errors
+const errors = reactive({
+  title: '',
+  frequency: '',
+});
+
 // Watch for habit changes when editing
 watch(
   () => props.habit,
@@ -178,16 +185,34 @@ const resetForm = () => {
     frequency: 'daily',
   };
   error.value = null;
+  errors.title = '';
+  errors.frequency = '';
 };
 
 const handleSubmit = async () => {
+  // Reset errors
+  errors.title = '';
+  errors.frequency = '';
+  error.value = null;
+
+  // Validate form
+  let hasErrors = false;
+
   if (!form.value.title.trim()) {
-    error.value = 'Title is required';
+    errors.title = 'Title is required';
+    hasErrors = true;
+  }
+
+  if (!form.value.frequency) {
+    errors.frequency = 'Frequency is required';
+    hasErrors = true;
+  }
+
+  if (hasErrors) {
     return;
   }
 
   loading.value = true;
-  error.value = null;
 
   try {
     if (props.isEditing && props.habit) {
