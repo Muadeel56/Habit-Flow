@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
     <AppHeader @toggle-sidebar="toggleSidebar" />
 
@@ -8,10 +8,13 @@
       <AppSidebar :is-open="sidebarOpen" @close="closeSidebar" />
 
       <!-- Main content -->
-      <main class="flex-1 lg:ml-0">
-        <div class="py-6">
+      <main class="flex-1 lg:ml-0 min-h-screen">
+        <div class="py-8">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <slot />
+            <!-- Main content area -->
+            <div class="space-y-8">
+              <slot />
+            </div>
           </div>
         </div>
       </main>

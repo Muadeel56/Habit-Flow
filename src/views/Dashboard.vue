@@ -1,190 +1,338 @@
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <div>
-      <h1 class="text-3xl font-bold text-foreground">Analytics Dashboard</h1>
-      <p class="mt-2 text-muted-foreground">
-        Track your habit progress and insights
-      </p>
-    </div>
+    <!-- Consistent Page Header -->
+    <PageHeader
+      title="Dashboard"
+      description="Track your daily progress and stay motivated"
+    >
+      <template #actions>
+        <!-- Welcome Progress Card -->
+        <div
+          class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-4 text-white shadow-lg"
+        >
+          <div class="text-center">
+            <div class="text-2xl font-bold">{{ todayProgress }}%</div>
+            <div class="text-sm text-blue-100">Today's Progress</div>
+          </div>
+        </div>
+      </template>
+    </PageHeader>
 
     <!-- Loading state -->
     <div v-if="loading" class="flex justify-center py-12">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"
-      ></div>
+      <div class="flex flex-col items-center space-y-4">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"
+        ></div>
+        <p class="text-gray-600 dark:text-gray-400">
+          Loading your dashboard...
+        </p>
+      </div>
     </div>
 
     <!-- Error state -->
-    <div v-else-if="error" class="text-center py-12">
-      <div class="text-destructive mb-4">{{ error }}</div>
-      <button
-        @click="loadData"
-        class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-      >
-        Retry
-      </button>
+    <div
+      v-else-if="error"
+      class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6"
+    >
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <svg
+            class="h-6 w-6 text-red-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div class="ml-4 flex-1">
+          <h3 class="text-lg font-semibold text-red-800 dark:text-red-200">
+            Error loading dashboard
+          </h3>
+          <p class="text-red-700 dark:text-red-300 mt-1">{{ error }}</p>
+          <button
+            @click="loadData"
+            class="mt-4 bg-red-100 dark:bg-red-900/30 px-4 py-2 rounded-lg text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Dashboard content -->
     <div v-else class="space-y-8">
       <!-- Stats cards -->
-      <!-- Progress Overview Cards -->
-      <Suspense>
-        <template #default>
-          <ProgressOverviewCards />
-        </template>
-        <template #fallback>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div
-              v-for="i in 4"
-              :key="i"
-              class="bg-card rounded-lg p-6 animate-pulse"
-            >
-              <div class="h-4 bg-muted rounded w-3/4 mb-2"></div>
-              <div class="h-8 bg-muted rounded w-1/2"></div>
-            </div>
-          </div>
-        </template>
-      </Suspense>
+      <ProgressOverviewCards />
 
       <!-- Charts section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         <!-- Completion chart -->
-        <Suspense>
-          <template #default>
-            <CompletionChart />
-          </template>
-          <template #fallback>
-            <div class="bg-card rounded-lg p-6">
-              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
-              <div class="h-64 bg-muted rounded animate-pulse"></div>
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                Completion Trends
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Your progress over time
+              </p>
             </div>
-          </template>
-        </Suspense>
+            <div class="flex space-x-2">
+              <button
+                class="px-3 py-1 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg"
+              >
+                Week
+              </button>
+              <button
+                class="px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg"
+              >
+                Month
+              </button>
+              <button
+                class="px-3 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg"
+              >
+                3M
+              </button>
+            </div>
+          </div>
+          <CompletionChart />
+        </div>
 
         <!-- Streak widget -->
-        <Suspense>
-          <template #default>
-            <StreakWidget />
-          </template>
-          <template #fallback>
-            <div class="bg-card rounded-lg p-6">
-              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
-              <div class="h-64 bg-muted rounded animate-pulse"></div>
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                Habit Streaks
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                Your consistency streaks
+              </p>
             </div>
-          </template>
-        </Suspense>
+            <div
+              class="h-8 w-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-lg flex items-center justify-center"
+            >
+              <svg
+                class="h-5 w-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+            </div>
+          </div>
+          <StreakWidget />
+        </div>
       </div>
 
-      <!-- Achievements Widget -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Suspense>
-          <template #default>
-            <BadgeWidget />
-          </template>
-          <template #fallback>
-            <div class="bg-card rounded-lg p-6">
-              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
-              <div class="h-32 bg-muted rounded animate-pulse"></div>
+      <!-- Bottom section -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        <!-- Achievements Widget -->
+        <div class="xl:col-span-1">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                  Achievements
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
+                  Your recent badges
+                </p>
+              </div>
+              <router-link
+                to="/achievements"
+                class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium"
+              >
+                View All
+              </router-link>
             </div>
-          </template>
-        </Suspense>
+            <BadgeWidget />
+          </div>
+        </div>
 
-        <!-- Placeholder for future widget -->
-        <div class="bg-card rounded-lg shadow-sm border border-border p-6">
-          <h3 class="text-lg font-semibold text-card-foreground mb-4">
-            Coming Soon
-          </h3>
-          <p class="text-muted-foreground">
-            More analytics features coming soon!
-          </p>
+        <!-- Recent Activity -->
+        <div class="xl:col-span-2">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700"
+          >
+            <div
+              class="px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                    Recent Activity
+                  </h3>
+                  <p class="text-gray-600 dark:text-gray-400 text-sm">
+                    Your latest completions
+                  </p>
+                </div>
+                <div
+                  class="h-8 w-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center"
+                >
+                  <svg
+                    class="h-5 w-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="p-6">
+              <div
+                v-if="recentCompletions.length === 0"
+                class="text-center py-8"
+              >
+                <div
+                  class="h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <svg
+                    class="h-8 w-8 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <p class="text-gray-600 dark:text-gray-400">
+                  No recent activity
+                </p>
+                <p class="text-gray-500 dark:text-gray-500 text-sm mt-1">
+                  Complete some habits to see your progress here
+                </p>
+              </div>
+              <div v-else class="space-y-4">
+                <div
+                  v-for="completion in recentCompletions"
+                  :key="completion.id"
+                  class="flex items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <div class="flex-shrink-0">
+                    <div
+                      class="h-10 w-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-xl flex items-center justify-center"
+                    >
+                      <svg
+                        class="h-5 w-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="ml-4 flex-1">
+                    <p
+                      class="text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Completed "{{ getHabitTitle(completion.habit_id) }}"
+                    </p>
+                    <p class="text-xs text-gray-600 dark:text-gray-400">
+                      {{ formatRelativeTime(completion.completed_at) }}
+                    </p>
+                  </div>
+                  <div class="text-green-600 dark:text-green-400">
+                    <svg
+                      class="h-5 w-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Detailed analytics -->
-      <div class="grid grid-cols-1 gap-8">
-        <Suspense>
-          <template #default>
-            <HabitAnalytics />
-          </template>
-          <template #fallback>
-            <div class="bg-card rounded-lg p-6">
-              <div class="h-4 bg-muted rounded w-1/3 mb-4"></div>
-              <div class="h-96 bg-muted rounded animate-pulse"></div>
-            </div>
-          </template>
-        </Suspense>
-      </div>
-
-      <!-- Recent activity -->
-      <div class="bg-card rounded-lg shadow-md">
-        <div class="px-6 py-4 border-b border-border">
-          <h2 class="text-lg font-medium text-card-foreground">
-            Recent Activity
-          </h2>
-        </div>
-        <div class="p-6">
-          <div v-if="recentCompletions.length === 0" class="text-center py-8">
-            <p class="text-muted-foreground">No recent activity</p>
-          </div>
-          <div v-else class="space-y-4">
-            <div
-              v-for="completion in recentCompletions"
-              :key="completion.id"
-              class="flex items-center"
-            >
-              <div class="flex-shrink-0">
-                <div
-                  class="h-8 w-8 bg-secondary/10 rounded-full flex items-center justify-center"
-                >
-                  <CheckCircleIcon class="h-4 w-4 text-secondary" />
-                </div>
-              </div>
-              <div class="ml-4">
-                <p class="text-sm text-card-foreground">
-                  Completed "{{ getHabitTitle(completion.habit_id) }}"
-                </p>
-                <p class="text-xs text-muted-foreground">
-                  {{ formatRelativeTime(completion.completed_at) }}
-                </p>
-              </div>
-            </div>
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+              Detailed Analytics
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              Comprehensive habit insights
+            </p>
           </div>
         </div>
+        <HabitAnalytics />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useAnalyticsStore } from '../store/analytics';
 import { useHabitsStore } from '../store/habits';
-import { CheckCircleIcon } from '@heroicons/vue/24/outline';
-
-// Lazy load components
-const CompletionChart = defineAsyncComponent(
-  () => import('../components/analytics/CompletionChart.vue')
-);
-const StreakWidget = defineAsyncComponent(
-  () => import('../components/analytics/StreakWidget.vue')
-);
-const HabitAnalytics = defineAsyncComponent(
-  () => import('../components/analytics/HabitAnalytics.vue')
-);
-const ProgressOverviewCards = defineAsyncComponent(
-  () => import('../components/analytics/ProgressOverviewCards.vue')
-);
-const BadgeWidget = defineAsyncComponent(
-  () => import('../components/achievements/BadgeWidget.vue')
-);
+import PageHeader from '../components/layout/PageHeader.vue';
+import CompletionChart from '../components/analytics/CompletionChart.vue';
+import StreakWidget from '../components/analytics/StreakWidget.vue';
+import HabitAnalytics from '../components/analytics/HabitAnalytics.vue';
+import ProgressOverviewCards from '../components/analytics/ProgressOverviewCards.vue';
+import BadgeWidget from '../components/achievements/BadgeWidget.vue';
 
 const analyticsStore = useAnalyticsStore();
 const habitsStore = useHabitsStore();
 
 const loading = ref(false);
 const error = ref<string | null>(null);
+
+const todayProgress = computed(() => {
+  // Calculate today's progress percentage
+  const today = new Date().toDateString();
+  const todayCompletions = habitsStore.habitCompletions.filter(
+    completion => new Date(completion.completed_at).toDateString() === today
+  );
+  const totalHabits = habitsStore.habits.length;
+  return totalHabits > 0
+    ? Math.round((todayCompletions.length / totalHabits) * 100)
+    : 0;
+});
 
 const recentCompletions = computed(() => {
   return habitsStore.habitCompletions

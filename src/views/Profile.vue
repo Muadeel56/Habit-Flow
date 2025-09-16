@@ -1,41 +1,59 @@
 <template>
-  <div>
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-foreground">Profile</h1>
-      <p class="mt-2 text-muted-foreground">
-        Manage your account settings and preferences
-      </p>
-    </div>
+  <div class="space-y-8">
+    <!-- Consistent Page Header -->
+    <PageHeader
+      title="Profile"
+      description="Manage your account settings and preferences"
+    >
+      <template #actions>
+        <!-- User Avatar Preview -->
+        <div
+          class="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl p-4 text-white shadow-lg"
+        >
+          <div class="text-center">
+            <div class="text-2xl font-bold">{{ getInitials() }}</div>
+            <div class="text-sm text-purple-100">Your Avatar</div>
+          </div>
+        </div>
+      </template>
+    </PageHeader>
 
     <!-- Loading State -->
-    <div v-if="profileStore.loading" class="max-w-2xl">
-      <div class="bg-card rounded-lg shadow p-6">
+    <div v-if="profileStore.loading" class="max-w-4xl">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
+      >
         <div class="animate-pulse">
-          <div class="flex items-center mb-6">
-            <div class="h-16 w-16 bg-gray-300 rounded-full"></div>
-            <div class="ml-4">
-              <div class="h-4 bg-gray-300 rounded w-24"></div>
+          <div class="flex items-center mb-8">
+            <div
+              class="h-20 w-20 bg-gray-200 dark:bg-gray-600 rounded-2xl"
+            ></div>
+            <div class="ml-6">
+              <div
+                class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-32 mb-2"
+              ></div>
+              <div class="h-3 bg-gray-200 dark:bg-gray-600 rounded w-24"></div>
             </div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="h-10 bg-gray-300 rounded"></div>
-            <div class="h-10 bg-gray-300 rounded"></div>
-            <div class="h-10 bg-gray-300 rounded"></div>
-            <div class="h-10 bg-gray-300 rounded"></div>
+            <div class="h-12 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
+            <div class="h-12 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
+            <div class="h-12 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
+            <div class="h-12 bg-gray-200 dark:bg-gray-600 rounded-xl"></div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="profileStore.error" class="max-w-2xl">
+    <div v-else-if="profileStore.error" class="max-w-4xl">
       <div
-        class="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6"
+        class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6"
       >
         <div class="flex">
           <div class="flex-shrink-0">
             <svg
-              class="h-5 w-5 text-destructive"
+              class="h-6 w-6 text-red-400"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -46,222 +64,263 @@
               />
             </svg>
           </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-destructive">
+          <div class="ml-4 flex-1">
+            <h3 class="text-lg font-semibold text-red-800 dark:text-red-200">
               Error loading profile
             </h3>
-            <div class="mt-2 text-sm text-destructive/80">
+            <p class="text-red-700 dark:text-red-300 mt-1">
               {{ profileStore.error }}
-            </div>
-            <div class="mt-3">
-              <button
-                @click="loadProfile"
-                class="bg-destructive/10 text-destructive px-3 py-1 rounded text-sm hover:bg-destructive/20 transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
+            </p>
+            <button
+              @click="profileStore.loadProfile"
+              class="mt-4 bg-red-100 dark:bg-red-900/30 px-4 py-2 rounded-lg text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+            >
+              Try again
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Profile Content -->
-    <div v-else-if="profileStore.profile" class="max-w-2xl">
-      <!-- Success Message -->
+    <div v-else class="max-w-4xl space-y-8">
+      <!-- Profile Information Card -->
       <div
-        v-if="showSuccessMessage"
-        class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6"
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
       >
-        <div class="flex">
-          <div class="flex-shrink-0">
+        <div class="flex items-center mb-8">
+          <div
+            class="h-20 w-20 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+          >
+            {{ getInitials() }}
+          </div>
+          <div class="ml-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ profileStore.profile?.full_name || 'User' }}
+            </h2>
+            <p class="text-gray-600 dark:text-gray-400">
+              {{ profileStore.profile?.email || 'No email provided' }}
+            </p>
+            <div class="flex items-center mt-2">
+              <span
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+              >
+                <svg
+                  class="w-3 h-3 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Active
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <form @submit.prevent="updateProfile" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="full_name"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Full Name
+              </label>
+              <input
+                id="full_name"
+                v-model="profileForm.full_name"
+                type="text"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                v-model="profileForm.email"
+                type="email"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                placeholder="Enter your email"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label
+                for="timezone"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Timezone
+              </label>
+              <select
+                id="timezone"
+                v-model="profileForm.timezone"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+              >
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">Eastern Time</option>
+                <option value="America/Chicago">Central Time</option>
+                <option value="America/Denver">Mountain Time</option>
+                <option value="America/Los_Angeles">Pacific Time</option>
+                <option value="Europe/London">London</option>
+                <option value="Europe/Paris">Paris</option>
+                <option value="Asia/Tokyo">Tokyo</option>
+                <option value="Asia/Shanghai">Shanghai</option>
+                <option value="Australia/Sydney">Sydney</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="preferred_language"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Language
+              </label>
+              <select
+                id="preferred_language"
+                v-model="profileForm.preferred_language"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+              >
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+                <option value="zh">Chinese</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              type="submit"
+              :disabled="profileStore.loading"
+              class="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-3 rounded-xl hover:from-purple-600 hover:to-pink-700 disabled:opacity-50 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+            >
+              {{ profileStore.loading ? 'Saving...' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Notification Preferences -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+              Notification Preferences
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              Customize how you receive notifications
+            </p>
+          </div>
+          <div
+            class="h-8 w-8 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-lg flex items-center justify-center"
+          >
             <svg
-              class="h-5 w-5 text-green-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              class="h-5 w-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
               <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clip-rule="evenodd"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-5 5v-5zM4.828 7l2.586 2.586a2 2 0 002.828 0L12.828 7H4.828z"
               />
             </svg>
           </div>
-          <div class="ml-3">
-            <p class="text-sm font-medium text-green-800">
-              Profile updated successfully!
+        </div>
+        <NotificationSettings />
+      </div>
+
+      <!-- Account Actions -->
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+              Account Actions
+            </h3>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              Manage your account settings
             </p>
           </div>
+          <div
+            class="h-8 w-8 bg-gradient-to-r from-red-400 to-pink-500 rounded-lg flex items-center justify-center"
+          >
+            <svg
+              class="h-5 w-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+          </div>
         </div>
-      </div>
 
-      <!-- Profile information -->
-      <div class="bg-card rounded-lg shadow mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-foreground">
-            Profile Information
-          </h2>
-        </div>
-        <div class="p-6">
-          <form @submit.prevent="saveProfile">
-            <div class="flex items-center mb-6">
-              <div class="relative">
-                <div
-                  v-if="profileStore.profile.avatar_url"
-                  class="h-16 w-16 rounded-full overflow-hidden"
-                >
-                  <img
-                    :src="profileStore.profile.avatar_url"
-                    :alt="profileStore.fullName || 'User avatar'"
-                    class="h-full w-full object-cover"
-                  />
-                </div>
-                <div
-                  v-else
-                  class="h-16 w-16 bg-gray-300 rounded-full flex items-center justify-center"
-                >
-                  <span class="text-muted-foreground font-medium text-xl">
-                    {{ getInitials() }}
-                  </span>
-                </div>
-                <input
-                  ref="avatarInput"
-                  type="file"
-                  accept="image/*"
-                  @change="handleAvatarChange"
-                  class="hidden"
-                />
-              </div>
-              <div class="ml-4">
-                <button
-                  type="button"
-                  @click="triggerAvatarUpload"
-                  :disabled="profileStore.saving"
-                  class="text-blue-600 hover:text-blue-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {{ profileStore.saving ? 'Uploading...' : 'Change Photo' }}
-                </button>
-              </div>
+        <div class="space-y-4">
+          <div
+            class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
+          >
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">
+                Export Data
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Download your habit data
+              </p>
             </div>
+            <button
+              class="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-4 py-2 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors"
+            >
+              Export
+            </button>
+          </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  First Name
-                </label>
-                <input
-                  v-model="formData.first_name"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your first name"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Last Name
-                </label>
-                <input
-                  v-model="formData.last_name"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your last name"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input
-                  :value="profileStore.profile.email"
-                  type="email"
-                  disabled
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                />
-                <p class="text-xs text-gray-500 mt-1">
-                  Email cannot be changed
-                </p>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Phone
-                </label>
-                <input
-                  v-model="formData.phone"
-                  type="tel"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your phone number"
-                />
-              </div>
+          <div
+            class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl"
+          >
+            <div>
+              <h4 class="font-medium text-gray-900 dark:text-white">
+                Delete Account
+              </h4>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                Permanently delete your account
+              </p>
             </div>
-
-            <div class="mt-6">
-              <button
-                type="submit"
-                :disabled="profileStore.saving || !hasChanges"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {{ profileStore.saving ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Preferences -->
-      <div class="bg-card rounded-lg shadow">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-medium text-foreground">Preferences</h2>
-        </div>
-        <div class="p-6">
-          <form @submit.prevent="savePreferences">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-sm font-medium text-foreground">
-                    Weekly Reports
-                  </h3>
-                  <p class="text-sm text-gray-500">
-                    Receive weekly progress summaries
-                  </p>
-                </div>
-                <input
-                  v-model="formData.weekly_reports"
-                  type="checkbox"
-                  class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <div class="mt-6">
-              <button
-                type="submit"
-                :disabled="profileStore.saving || !hasPreferenceChanges"
-                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {{ profileStore.saving ? 'Saving...' : 'Save Preferences' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- Notification Settings -->
-      <div class="bg-card rounded-lg shadow">
-        <div class="p-6">
-          <Suspense>
-            <template #default>
-              <NotificationSettings />
-            </template>
-            <template #fallback>
-              <div class="space-y-4">
-                <div class="h-6 bg-muted rounded w-1/3 animate-pulse"></div>
-                <div class="space-y-2">
-                  <div class="h-4 bg-muted rounded w-full animate-pulse"></div>
-                  <div class="h-4 bg-muted rounded w-3/4 animate-pulse"></div>
-                </div>
-              </div>
-            </template>
-          </Suspense>
+            <button
+              class="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-4 py-2 rounded-lg hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -269,170 +328,48 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  reactive,
-  computed,
-  onMounted,
-  watch,
-  defineAsyncComponent,
-} from 'vue';
-import { useProfileStore } from '../store/profile';
-
-// Lazy load component
-const NotificationSettings = defineAsyncComponent(
-  () => import('../components/profile/NotificationSettings.vue')
-);
+import { reactive, onMounted } from 'vue';
+import { useProfileStore } from '@/store/profile';
+import PageHeader from '@/components/layout/PageHeader.vue';
+import NotificationSettings from '@/components/profile/NotificationSettings.vue';
 
 const profileStore = useProfileStore();
-const showSuccessMessage = ref(false);
-const avatarInput = ref<{ click: () => void } | null>(null);
 
-// Form data
-const formData = reactive({
-  first_name: '',
-  last_name: '',
-  phone: '',
-  email_notifications: true,
-  daily_reminders: true,
-  weekly_reports: false,
+const profileForm = reactive({
+  full_name: '',
+  email: '',
+  timezone: 'UTC',
+  preferred_language: 'en',
 });
-
-// Computed properties
-const hasChanges = computed(() => {
-  if (!profileStore.profile) return false;
-
-  return (
-    formData.first_name !== (profileStore.profile.first_name || '') ||
-    formData.last_name !== (profileStore.profile.last_name || '') ||
-    formData.phone !== (profileStore.profile.phone || '')
-  );
-});
-
-const hasPreferenceChanges = computed(() => {
-  if (!profileStore.profile) return false;
-
-  return (
-    formData.email_notifications !== profileStore.profile.email_notifications ||
-    formData.daily_reminders !== profileStore.profile.daily_reminders ||
-    formData.weekly_reports !== profileStore.profile.weekly_reports
-  );
-});
-
-// Methods
-const loadProfile = async () => {
-  const result = await profileStore.fetchProfile();
-  if (result.success && profileStore.profile) {
-    updateFormData();
-  }
-};
-
-const updateFormData = () => {
-  if (profileStore.profile) {
-    formData.first_name = profileStore.profile.first_name || '';
-    formData.last_name = profileStore.profile.last_name || '';
-    formData.phone = profileStore.profile.phone || '';
-    formData.email_notifications = profileStore.profile.email_notifications;
-    formData.daily_reminders = profileStore.profile.daily_reminders;
-    formData.weekly_reports = profileStore.profile.weekly_reports;
-  }
-};
-
-const triggerAvatarUpload = () => {
-  if (avatarInput.value && typeof avatarInput.value.click === 'function') {
-    avatarInput.value.click();
-  }
-};
-
-const saveProfile = async () => {
-  const updates = {
-    first_name: formData.first_name || null,
-    last_name: formData.last_name || null,
-    phone: formData.phone || null,
-  };
-
-  const result = await profileStore.updateProfile(updates);
-  if (result.success) {
-    showSuccessMessage.value = true;
-    window.setTimeout(() => {
-      showSuccessMessage.value = false;
-    }, 3000);
-  }
-};
-
-const savePreferences = async () => {
-  const updates = {
-    email_notifications: formData.email_notifications,
-    daily_reminders: formData.daily_reminders,
-    weekly_reports: formData.weekly_reports,
-  };
-
-  const result = await profileStore.updateProfile(updates);
-  if (result.success) {
-    showSuccessMessage.value = true;
-    window.setTimeout(() => {
-      showSuccessMessage.value = false;
-    }, 3000);
-  }
-};
-
-const handleAvatarChange = async (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-
-  if (file) {
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      window.alert('File size must be less than 5MB');
-      return;
-    }
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      window.alert('Please select an image file');
-      return;
-    }
-
-    const result = await profileStore.uploadAvatar(file);
-    if (result.success) {
-      showSuccessMessage.value = true;
-      window.setTimeout(() => {
-        showSuccessMessage.value = false;
-      }, 3000);
-    }
-  }
-};
 
 const getInitials = () => {
-  if (!profileStore.profile) return 'U';
-
-  const firstName = profileStore.profile.first_name || '';
-  const lastName = profileStore.profile.last_name || '';
-
-  if (firstName && lastName) {
-    return (firstName[0] + lastName[0]).toUpperCase();
-  } else if (firstName) {
-    return firstName[0].toUpperCase();
-  } else if (profileStore.profile.email) {
-    return profileStore.profile.email[0].toUpperCase();
-  }
-
-  return 'U';
+  const name =
+    profileForm.full_name || profileStore.profile?.full_name || 'User';
+  return name
+    .split(' ')
+    .map(word => word.charAt(0))
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 };
 
-// Lifecycle hooks
-onMounted(() => {
-  loadProfile();
-});
+const updateProfile = async () => {
+  try {
+    await profileStore.updateProfile(profileForm);
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+  }
+};
 
-// Watch for profile changes and update form data
-watch(
-  () => profileStore.profile,
-  newProfile => {
-    if (newProfile) {
-      updateFormData();
-    }
-  },
-  { immediate: true }
-);
+onMounted(() => {
+  profileStore.loadProfile();
+  if (profileStore.profile) {
+    Object.assign(profileForm, {
+      full_name: profileStore.profile.full_name || '',
+      email: profileStore.profile.email || '',
+      timezone: profileStore.profile.timezone || 'UTC',
+      preferred_language: profileStore.profile.preferred_language || 'en',
+    });
+  }
+});
 </script>
