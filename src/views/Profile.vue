@@ -72,7 +72,7 @@
               {{ profileStore.error }}
             </p>
             <button
-              @click="profileStore.loadProfile"
+              @click="profileStore.fetchProfile"
               class="mt-4 bg-red-100 dark:bg-red-900/30 px-4 py-2 rounded-lg text-red-800 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
             >
               Try again
@@ -96,7 +96,7 @@
           </div>
           <div class="ml-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
-              {{ profileStore.profile?.full_name || 'User' }}
+              {{ profileStore.fullName || 'User' }}
             </h2>
             <p class="text-gray-600 dark:text-gray-400">
               {{ profileStore.profile?.email || 'No email provided' }}
@@ -126,17 +126,32 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
-                for="full_name"
+                for="first_name"
                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
               >
-                Full Name
+                First Name
               </label>
               <input
-                id="full_name"
-                v-model="profileForm.full_name"
+                id="first_name"
+                v-model="profileForm.first_name"
                 type="text"
                 class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
-                placeholder="Enter your full name"
+                placeholder="Enter your first name"
+              />
+            </div>
+            <div>
+              <label
+                for="last_name"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Last Name
+              </label>
+              <input
+                id="last_name"
+                v-model="profileForm.last_name"
+                type="text"
+                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                placeholder="Enter your last name"
               />
             </div>
             <div>
@@ -179,30 +194,6 @@
                 <option value="Asia/Tokyo">Tokyo</option>
                 <option value="Asia/Shanghai">Shanghai</option>
                 <option value="Australia/Sydney">Sydney</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="preferred_language"
-                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-              >
-                Language
-              </label>
-              <select
-                id="preferred_language"
-                v-model="profileForm.preferred_language"
-                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
-              >
-                <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="it">Italian</option>
-                <option value="pt">Portuguese</option>
-                <option value="ru">Russian</option>
-                <option value="ja">Japanese</option>
-                <option value="ko">Korean</option>
-                <option value="zh">Chinese</option>
               </select>
             </div>
           </div>
@@ -336,18 +327,17 @@ import NotificationSettings from '@/components/profile/NotificationSettings.vue'
 const profileStore = useProfileStore();
 
 const profileForm = reactive({
-  full_name: '',
+  first_name: '',
+  last_name: '',
   email: '',
   timezone: 'UTC',
-  preferred_language: 'en',
 });
 
 const getInitials = () => {
-  const name =
-    profileForm.full_name || profileStore.profile?.full_name || 'User';
+  const name = profileStore.fullName || 'User';
   return name
     .split(' ')
-    .map(word => word.charAt(0))
+    .map((word: string) => word.charAt(0))
     .join('')
     .toUpperCase()
     .slice(0, 2);
@@ -362,13 +352,13 @@ const updateProfile = async () => {
 };
 
 onMounted(() => {
-  profileStore.loadProfile();
+  profileStore.fetchProfile();
   if (profileStore.profile) {
     Object.assign(profileForm, {
-      full_name: profileStore.profile.full_name || '',
+      first_name: profileStore.profile?.first_name || '',
+      last_name: profileStore.profile?.last_name || '',
       email: profileStore.profile.email || '',
       timezone: profileStore.profile.timezone || 'UTC',
-      preferred_language: profileStore.profile.preferred_language || 'en',
     });
   }
 });
